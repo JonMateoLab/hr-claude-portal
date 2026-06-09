@@ -3,67 +3,68 @@ const EXERCISES = [
         id: 1,
         icon: "&#9733;",
         title: "Preparar un Talent Review / Calibración",
-        desc: "Usa Claude para construir el 9-box, preparar narrativas por persona, anticipar el pushback del liderazgo y llegar a la sesión de calibración con todo listo.",
+        desc: "Usa Claude para sintetizar los feedbacks que ya tienes (cliente, People Lead, mentor y KPIs de HR), preparar una visión equilibrada por persona y llegar a la sesión con el Talent Lead con todo ordenado.",
         difficulty: "medium",
         time: "15 min",
         steps: [
             {
-                title: "Construye el 9-box con tu población",
-                text: "Pega en Claude el listado de tu población con nombre, nivel, performance rating y potential assessment. Claude te devolverá la distribución en el 9-box y te señalará outliers o inconsistencias antes de que entres a la sala.",
-                code: `Eres un HRBP experto en calibración de talento en una consultora tecnológica. Tengo la siguiente población para el Talent Review de Q2:
+                title: "Consolida los inputs que ya tienes por persona",
+                text: "Llegas al talent review con feedback de varias fuentes: input de cliente, input del People Lead o mentor, y los KPIs de people de HR. Pega esos inputs (anonimizados) y pide a Claude que los consolide en una ficha equilibrada por persona, señalando dónde coinciden y dónde se contradicen. No le pides que decida ni que coloque a nadie: le pides síntesis para llegar preparado/a a la sesión con el Talent Lead.",
+                code: `Eres un HRBP preparando un Talent Review en una consultora tecnológica. Para cada persona tengo inputs de tres fuentes que ya he recogido. Consolídalos en una ficha equilibrada por persona. No coloques a nadie en una matriz ni tomes decisiones: sintetiza la información y señala coincidencias y contradicciones entre fuentes.
 
-- María García, Senior Manager, Performance: Exceeds, Potential: High
-- Carlos López, Manager, Performance: Meets, Potential: Medium
-- Ana Martínez, Senior Analyst, Performance: Exceeds, Potential: High
-- David Sánchez, Consultant, Performance: Below, Potential: Medium
-- Laura Fernández, Manager, Performance: Meets, Potential: High
-- Javier Romero, Senior Manager, Performance: Meets, Potential: Low
-- Elena Torres, Analyst, Performance: Exceeds, Potential: Medium
-- Pablo Ruiz, Senior Analyst, Performance: Below, Potential: Low
+<inputs>
+Persona_01 (Senior Manager, 6 años):
+- Input cliente: muy satisfecho, lideró el delivery de un programa crítico y consiguió una extensión.
+- Input People Lead: sólido técnicamente, pero delega poco y se sobrecarga.
+- KPIs HR: rating "Exceeds", 0 incidencias, ha mentorizado a 2 personas.
 
-1. Coloca a cada persona en el cuadrante correcto del 9-box (eje X: Performance, eje Y: Potential).
-2. Identifica los "Stars" (alto potencial + alto desempeño) y los "Risk" (bajo desempeño + bajo potencial).
-3. Señala si hay algún patrón o desequilibrio en la distribución que deba anticipar antes de la sesión de calibración.
-4. Dame una tabla resumen clara por cuadrante.`,
-                tip: "Si tienes el excel de tu población, puedes copiar y pegar directamente las filas. Claude entiende tablas en texto plano."
+Persona_02 (Consultant, 2 años):
+- Input cliente: feedback mixto, dificultades para gestionar expectativas.
+- Input mentor: muestra ganas pero le falta autonomía técnica.
+- KPIs HR: rating "Meets", sin desarrollo visible en 6 meses.
+
+Persona_03 (Manager, 4 años):
+- Input cliente: positivo y constante.
+- Input People Lead: ha asumido el mentoring de 2 analistas sin que se lo pidieran.
+- KPIs HR: rating "Meets", potencial alto según la última revisión.
+</inputs>
+
+Para cada persona dame: 1) Síntesis equilibrada en 2-3 frases, 2) Dónde coinciden las fuentes y dónde se contradicen, 3) Preguntas abiertas que conviene resolver en la sesión de calibración.`,
+                tip: "Puedes copiar y pegar los inputs directamente desde tus notas o tu export. Claude entiende texto plano y tablas. Recuerda anonimizar (Persona_01, etc.) antes de pegar."
             },
             {
-                title: "Genera narrativas por persona",
-                text: "Para cada persona en los cuadrantes clave (Stars, Rising Stars, Under Performers), pide a Claude que te ayude a construir una narrativa de 2-3 frases que puedas defender en la sala. Tiene que sonar a ti, no a un template.",
-                code: `Basándote en el 9-box anterior, ayúdame a preparar narrativas de calibración para las personas en los cuadrantes más críticos. Para cada una, escribe 2-3 frases que yo pueda usar en la sesión de Talent Review con el liderazgo.
+                title: "Prepara una narrativa equilibrada desde los feedbacks reales",
+                text: "Para la sesión necesitas resumir cada caso en pocas frases que se sostengan en hechos. Pide a Claude que, a partir de los inputs reales que ya consolidaste, redacte una narrativa equilibrada por persona — basada en lo que dicen las fuentes, sin inventar ni adornar. Tiene que sonar a ti y apoyarse en hechos observables.",
+                code: `A partir de los inputs consolidados anteriores, ayúdame a redactar una narrativa de calibración para la sesión de Talent Review. Para cada persona, 2-3 frases que pueda usar al presentar el caso al Talent Lead.
 
-El tono debe ser directo, concreto y orientado a hechos (no genérico). Menciona impacto en proyectos, comportamientos observables o momentum de desarrollo. Evita frases vacías como "tiene mucho potencial" sin respaldo.
+Reglas:
+- Básate solo en los inputs que te he dado; no inventes logros ni datos.
+- Tono directo, concreto y orientado a hechos (impacto en proyecto, comportamientos observables).
+- Evita frases vacías como "tiene mucho potencial" sin respaldo en los inputs.
+- Si para una persona los inputs son contradictorios o insuficientes, dilo explícitamente en lugar de forzar una conclusión.
 
-Personas prioritarias:
-- María García (Star): Lideró el delivery del proyecto Omega para un cliente FSI, gestionó un equipo de 8 personas y obtuvo una extensión de contrato.
-- David Sánchez (Under Performer): Dos proyectos consecutivos con feedback de cliente bajo, dificultades con autonomía técnica en nivel Consultant.
-- Laura Fernández (Rising Star): Performance consistente, ha asumido el mentoring de dos analistas nuevos sin que se lo pidieran formalmente.
-
-Para cada persona: narrativa de calibración + una recomendación de acción concreta (promoción, PIP, movilidad interna, etc.).`,
+Personas: Persona_01, Persona_02, Persona_03.`,
             },
             {
-                title: "Anticipa el pushback del liderazgo",
-                text: "Antes de entrar a la sala, pide a Claude que juegue al abogado del diablo. Que te lance las preguntas difíciles que te puede hacer un Managing Director o un People Lead escéptico.",
-                code: `Voy a presentar este Talent Review a un Managing Director que tiende a cuestionar las evaluaciones de su equipo, especialmente cuando hay recomendaciones de acción que implican conversaciones difíciles.
+                title: "Anticipa las preguntas de la sesión",
+                text: "Antes de entrar a la sesión, pide a Claude que juegue al abogado del diablo: que te lance las preguntas difíciles que pueden surgir del Talent Lead o de un People Lead escéptico sobre cada caso, para que llegues con las respuestas pensadas.",
+                code: `Voy a presentar estos casos en una sesión de Talent Review con el Talent Lead, que tiende a cuestionar las valoraciones cuando hay contradicciones entre fuentes.
 
-Simula ser ese MD y hazme las 5 preguntas más incómodas o críticas que me podría lanzar sobre estas tres personas:
-- María García: recomendación de promoción a Managing Director
-- David Sánchez: recomendación de inicio de proceso de mejora de desempeño (PIP)
-- Laura Fernández: recomendación de movilidad a rol de People Lead en otra capability
+Simula ser ese Talent Lead y hazme las 5 preguntas más incómodas o críticas que podría lanzarme sobre estos tres casos, teniendo en cuenta las contradicciones entre el input de cliente, el del People Lead/mentor y los KPIs de HR.
 
-Para cada pregunta, después dame también la respuesta que yo debería dar, con argumentos sólidos y datos.`,
+Para cada pregunta, dame también la respuesta que yo debería dar, apoyada en los inputs disponibles y reconociendo con honestidad lo que todavía no sé.`,
                 tip: "Haz este ejercicio en voz alta. Lee las preguntas como si las estuvieras escuchando de verdad. Así llegas a la sala sin que te pillen desprevenido/a."
             },
             {
-                title: "Prepara el deck de la sesión",
-                text: "Pide a Claude que te genere el esqueleto del deck de calibración: agenda, reglas del juego, distribución del 9-box, casos a debatir y próximos pasos. Luego tú lo pasas a PowerPoint o a las slides de Accenture.",
-                code: `Crea el esqueleto de contenido para un deck de Talent Review / Calibración de 8-10 slides. El contexto es:
-- Audiencia: Managing Directors y Senior Managers de la practice de Software Engineering EMEA
+                title: "Prepara tu resumen para la sesión",
+                text: "Pide a Claude que estructure tu síntesis en un documento de apoyo para la sesión: agenda, resumen por persona, contradicciones a resolver y preguntas abiertas. Es tu material de preparación, no una propuesta de decisiones cerradas.",
+                code: `Crea el esqueleto de un documento de apoyo para una sesión de Talent Review. Contexto:
+- Audiencia: Talent Lead y People Leads de la practice de Software Engineering
 - Duración de la sesión: 90 minutos
-- Población calibrada: 8 personas (distribución del 9-box ya preparada)
-- Objetivo: alinear ratings, identificar aceleradores de carrera y definir acciones para el semestre
+- Casos a revisar: 3 personas (síntesis por persona ya preparada)
+- Objetivo: alinear visiones a partir de los inputs de cliente, People Lead/mentor y KPIs de HR, y definir preguntas y acciones a validar
 
-Para cada slide dame: título, qué información va en ella y un bullet con el mensaje clave que quiero que el liderazgo se lleve. No me des diseño, solo el contenido y la estructura narrativa.`,
+Para cada sección dame: título, qué información va en ella y el mensaje clave. No me des diseño ni decisiones cerradas: el documento es para facilitar la conversación, no para sustituirla.`,
             }
         ]
     },
@@ -313,8 +314,10 @@ Andrés Muñoz | Consultant | 9 | DevSecOps | Junio | Competencia directa
 Isabel Vargas | Senior Analyst | 23 | Cloud & Infra | Junio | Cliente directo
 Marcos Delgado | Manager | 33 | Java Backend | Junio | Empresa producto
 
+Las tasas globales de attrition ya me las da Workday; no las recalcules. Céntrate en los patrones de quién se va y por qué.
+
 Análisis solicitado:
-1. Attrition rate H1 por capability (¿dónde se concentra?)
+1. Concentración de bajas por capability (¿dónde se acumulan y qué peso tiene cada una?)
 2. Distribución por nivel (¿qué nivel pierde más?)
 3. Tiempo en empresa de los que se van (¿en qué ventana temporal se produce el mayor riesgo?)
 4. Principales destinos (¿a dónde nos van? ¿startup, competencia, cliente?)

@@ -28,12 +28,38 @@ const CATEGORY_GROUPS = {
     'Presentaciones': 'Presentaciones'
 };
 
+// ===== FAVORITES =====
+const FAV_KEY = 'hrFavPrompts';
+let currentFilter = 'all';
+let currentSort = 'cat';
+let currentView = 'detailed';
+
+function getFavs() {
+    try { return JSON.parse(localStorage.getItem(FAV_KEY)) || []; }
+    catch (e) { return []; }
+}
+function isFav(id) { return getFavs().includes(id); }
+function toggleFav(id) {
+    const favs = getFavs();
+    const i = favs.indexOf(id);
+    if (i >= 0) favs.splice(i, 1); else favs.push(id);
+    localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+    updateFavCount();
+    if (currentFilter === '__fav__') renderPrompts('__fav__');
+}
+function updateFavCount() {
+    const el = document.getElementById('fav-count');
+    if (el) el.textContent = `(${getFavs().length})`;
+}
+
 // ===== RENDER FILTERS =====
 function renderFilters() {
     const bar = document.getElementById('filter-bar');
     const cats = ['all', ...new Set(PROMPTS.map(p => p.cat))];
 
-    bar.innerHTML = cats.map(cat => {
+    const favBtn = `<button class="filter-btn filter-fav" data-filter="__fav__">&#9733; Favoritos <span class="fav-count" id="fav-count">(${getFavs().length})</span></button>`;
+
+    bar.innerHTML = favBtn + cats.map(cat => {
         const label = CATEGORY_GROUPS[cat] || cat;
         return `<button class="filter-btn${cat === 'all' ? ' active' : ''}" data-filter="${cat}">${label}</button>`;
     }).join('');
@@ -48,26 +74,54 @@ function renderFilters() {
 }
 
 // ===== RENDER PROMPTS =====
-function renderPrompts(filter = 'all') {
-    const grid = document.getElementById('prompts-grid');
-    const filtered = filter === 'all' ? PROMPTS : PROMPTS.filter(p => p.cat === filter);
+function levelSlug(lvl) {
+    return (lvl || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
 
-    grid.innerHTML = filtered.map(p => `
+function renderPrompts(filter = currentFilter) {
+    currentFilter = filter;
+    const grid = document.getElementById('prompts-grid');
+    grid.classList.toggle('view-compact', currentView === 'compact');
+
+    let filtered;
+    if (filter === '__fav__') filtered = PROMPTS.filter(p => isFav(p.id));
+    else if (filter === 'all') filtered = PROMPTS.slice();
+    else filtered = PROMPTS.filter(p => p.cat === filter);
+
+    const lvlOrder = { 'basico': 1, 'intermedio': 2, 'avanzado': 3 };
+    if (currentSort === 'title') {
+        filtered.sort((a, b) => a.title.localeCompare(b.title, 'es'));
+    } else if (currentSort === 'level') {
+        filtered.sort((a, b) => (lvlOrder[levelSlug(a.level)] || 2) - (lvlOrder[levelSlug(b.level)] || 2) || a.title.localeCompare(b.title, 'es'));
+    } else {
+        filtered.sort((a, b) => a.cat.localeCompare(b.cat, 'es') || a.title.localeCompare(b.title, 'es'));
+    }
+
+    if (filter === '__fav__' && filtered.length === 0) {
+        grid.innerHTML = `<div class="prompts-empty"><span class="prompts-empty-icon">&#9734;</span><p>A&uacute;n no has marcado prompts como favoritos.<br>Pulsa la <strong>&#9733;</strong> en cualquier prompt para guardarlo aqu&iacute; y tenerlo siempre a mano.</p></div>`;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(p => {
+        const lvl = p.level ? `<span class="prompt-level lvl-${levelSlug(p.level)}">${p.level}</span>` : '';
+        return `
         <div class="prompt-card" data-category="${p.cat}">
             <div class="prompt-card-header">
                 <span class="prompt-category">${p.cat}</span>
+                <button class="fav-btn${isFav(p.id) ? ' fav-on' : ''}" onclick="toggleFav('${p.id}'); this.classList.toggle('fav-on')" title="Marcar como favorito" aria-label="Marcar como favorito">&#9733;</button>
             </div>
             <div class="prompt-card-body">
                 <h3>${p.title}</h3>
                 <p class="prompt-desc">${p.desc}</p>
+                ${lvl}
                 <div class="prompt-text">${escapeHtml(p.text)}</div>
             </div>
             <div class="prompt-card-actions">
-                <button class="btn btn-sm btn-secondary" onclick="toggleExpand(this)">Ver completo</button>
+                <button class="btn btn-sm btn-secondary btn-expand" onclick="toggleExpand(this)">Ver completo</button>
                 <button class="btn btn-sm btn-copy" onclick="copyPromptText('${p.id}')">Copiar</button>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
 }
 
 // ===== RENDER EXERCISES =====
@@ -208,9 +262,9 @@ function generatePrompt() {
             details: `Incluye:\n1. Diagnostico basado en los datos proporcionados\n2. Identificacion del segmento mas en riesgo\n3. 4-5 iniciativas priorizadas por impacto y viabilidad\n4. Para cada iniciativa: responsable, timeline, KPI\n5. Comunicacion de resultados al equipo`
         },
         politica: {
-            base: `Eres un consultor especializado en politicas de HR y cumplimiento normativo para empresas tecnologicas.`,
-            task: `Crea o revisa una politica de HR`,
-            details: `La politica debe incluir:\n1. Objetivo y alcance\n2. Definiciones clave\n3. Normas y procedimientos\n4. Responsabilidades (HRBP, People Lead, empleado)\n5. Excepciones y proceso de escalacion\n6. Marco legal aplicable`
+            base: `Eres un HRBP experto en explicar politicas y procedimientos internos de forma clara y accesible para cualquier empleado.`,
+            task: `Ayudame a resolver una duda de un empleado sobre una politica o procedimiento`,
+            details: `Te pegare el texto de la politica o procedimiento relevante y la duda concreta. Necesito que:\n1. Respondas a la duda en lenguaje sencillo, sin jerga\n2. Cites la parte de la politica en la que te basas\n3. Senales claramente si hay algo ambiguo o que dependa del caso concreto\n4. Indiques cuando conviene escalar a HR Legal o Employee Relations en lugar de responder directamente\n5. No inventes nada que no este en el texto de la politica que te doy`
         }
     };
 
@@ -327,9 +381,14 @@ function chapterIcon3D(id) {
             <circle cx="24" cy="16" r="5" fill="#fff" opacity=".85"/>
             <path d="M16 30 Q24 38 32 30" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/>
             <circle cx="38" cy="10" r="3" fill="#5df5a0"><animate attributeName="r" values="3;1.5;3" dur="2s" repeatCount="indefinite"/></circle></svg>`,
-        6: `<svg viewBox="0 0 48 48" class="ch-icon-svg"><defs><linearGradient id="ci6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffb400"/><stop offset="100%" stop-color="#ff8a00"/></linearGradient><filter id="cs6"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#ffb400" flood-opacity=".35"/></filter></defs>
-            <path d="M24 4 L28 16 L42 16 L31 24 L35 38 L24 30 L13 38 L17 24 L6 16 L20 16 Z" fill="url(#ci6)" filter="url(#cs6)"/>
-            <path d="M24 10 L26 18 L35 18 L28 23 L31 32 L24 27 L17 32 L20 23 L13 18 L22 18 Z" fill="#fff" opacity=".2"/></svg>`,
+        6: `<svg viewBox="0 0 48 48" class="ch-icon-svg"><defs><linearGradient id="ci6" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C966FF"/><stop offset="100%" stop-color="#A100FF"/></linearGradient><filter id="cs6"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#A100FF" flood-opacity=".35"/></filter></defs>
+            <g filter="url(#cs6)">
+                <circle cx="33" cy="17" r="5.5" fill="#6E54E6"/>
+                <path d="M24 41 Q33 28 42 41 Z" fill="#6E54E6"/>
+                <circle cx="18" cy="18" r="7" fill="url(#ci6)"/>
+                <path d="M6 43 Q18 27 30 43 Z" fill="url(#ci6)"/>
+            </g>
+            <circle cx="40" cy="9" r="2.5" fill="#5df5a0"><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle></svg>`,
         7: `<svg viewBox="0 0 48 48" class="ch-icon-svg"><defs><linearGradient id="ci7" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1a1228"/><stop offset="100%" stop-color="#2a1848"/></linearGradient><filter id="cs7"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#A100FF" flood-opacity=".4"/></filter></defs>
             <rect x="6" y="10" width="36" height="28" rx="6" fill="url(#ci7)" filter="url(#cs7)" stroke="#A100FF" stroke-width="1.5"/>
             <circle cx="11" cy="15" r="2" fill="#ff5f57"/><circle cx="17" cy="15" r="2" fill="#febc2e"/><circle cx="23" cy="15" r="2" fill="#28c840"/>
@@ -354,7 +413,18 @@ function chapterIcon3D(id) {
             <rect x="14" y="32" width="20" height="3" rx="1.5" fill="#5df5a0" opacity=".8"/>
             <circle cx="24" cy="12" r="2.5" fill="#fff" opacity=".7"/></svg>`
     };
-    return icons[id] || icons[1];
+    // New chapter 2 ("Prepara tu entorno y tu rol") gets a settings/sliders icon;
+    // chapters 3+ reuse the themed icons shifted by one position.
+    const gear = `<svg viewBox="0 0 48 48" class="ch-icon-svg"><defs><linearGradient id="cig" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C966FF"/><stop offset="100%" stop-color="#A100FF"/></linearGradient><filter id="csg"><feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#A100FF" flood-opacity=".35"/></filter></defs>
+            <rect x="8" y="10" width="32" height="28" rx="7" fill="url(#cig)" filter="url(#csg)"/>
+            <line x1="14" y1="18" x2="34" y2="18" stroke="#fff" stroke-width="2" opacity=".4" stroke-linecap="round"/>
+            <line x1="14" y1="24" x2="34" y2="24" stroke="#fff" stroke-width="2" opacity=".4" stroke-linecap="round"/>
+            <line x1="14" y1="30" x2="34" y2="30" stroke="#fff" stroke-width="2" opacity=".4" stroke-linecap="round"/>
+            <circle cx="20" cy="18" r="3.2" fill="#fff"/><circle cx="29" cy="24" r="3.2" fill="#5df5a0"/><circle cx="17" cy="30" r="3.2" fill="#fff"/>
+            <circle cx="44" cy="11" r="3" fill="#5df5a0"><animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite"/></circle></svg>`;
+    if (id === 1) return icons[1];
+    if (id === 2) return gear;
+    return icons[id - 1] || icons[1];
 }
 
 // ===== 3D ROCKET & TROPHY SVG =====
@@ -399,14 +469,13 @@ function journeyTrophySVG() {
 // ===== RENDER LEARNING PATH =====
 function renderLearningPath() {
     const container = document.getElementById('learning-path');
-    const robotStops = [1, 4, 7, 10];
 
     const stops = LEARNING_PATH.map((ch, i) => {
         const side = i % 2 === 0 ? 'jstop-left' : 'jstop-right';
-        const hasRobot = robotStops.includes(ch.id);
         return `
         <div class="journey-stop ${side}" onclick="openChapter(${ch.id})">
             <div class="journey-card">
+                <div class="journey-deco" style="animation-delay:${(i * 0.37).toFixed(2)}s">${cardDeco(ch.id)}</div>
                 <div class="jc-meta">
                     <span class="chapter-difficulty diff-${ch.difficulty}">${ch.difficulty}</span>
                     <span class="chapter-duration">&#9201; ${ch.duration}</span>
@@ -415,13 +484,13 @@ function renderLearningPath() {
                     <span class="ch-icon-wrap">${chapterIcon3D(ch.id)}</span>
                     <h3>${ch.title}</h3>
                 </div>
-                <p class="jc-subtitle">${ch.subtitle}</p>
+                <p class="jc-subtitle">${ch.subtitle}${/[.!?…]$/.test(ch.subtitle.trim()) ? '' : '.'}</p>
                 <div class="jc-topics">
                     ${ch.topics.slice(0, 3).map(t => `<span class="jc-topic">${t}</span>`).join('')}
                 </div>
             </div>
             <div class="journey-node">${ch.id}</div>
-            ${hasRobot ? `<div class="journey-robot robot-float">${chapterRobot(ch.id)}</div>` : '<div class="journey-spacer"></div>'}
+            <div class="journey-spacer"></div>
         </div>`;
     }).join('');
 
@@ -443,11 +512,13 @@ function renderLearningPath() {
 // ===== CHAPTER VIEWER (SLIDE-BASED) =====
 let cvCurrent = 0;
 let cvTotal = 0;
+let cvChapterId = 0;
 
 function openChapter(id) {
     const ch = LEARNING_PATH.find(c => c.id === id);
     if (!ch) return;
     cvCurrent = 0;
+    cvChapterId = id;
 
     const modal = document.getElementById('modal-overlay');
     const modalEl = modal.querySelector('.modal');
@@ -504,10 +575,19 @@ function goToSlide(idx) {
     document.querySelector('.cv-counter').textContent = `${cvCurrent+1} / ${cvTotal}`;
     document.querySelector('.cv-prev').disabled = cvCurrent === 0;
     const nextBtn = document.querySelector('.cv-next');
+    nextBtn.disabled = false;
     if (cvCurrent === cvTotal - 1) {
-        nextBtn.disabled = true;
+        const next = LEARNING_PATH.find(c => c.id === cvChapterId + 1);
+        if (next) {
+            nextBtn.innerHTML = 'Cap&iacute;tulo siguiente &#8594;';
+            nextBtn.onclick = () => openChapter(next.id);
+        } else {
+            nextBtn.innerHTML = 'Finalizar &#10003;';
+            nextBtn.onclick = closeModal;
+        }
     } else {
-        nextBtn.disabled = false;
+        nextBtn.innerHTML = 'Siguiente &#8594;';
+        nextBtn.onclick = () => navigateChapter(1);
     }
     document.querySelector('.cv-slides').scrollTop = 0;
 }
@@ -531,7 +611,7 @@ function cvRenderIntro(ch) {
                     ${ch.topics.map(t => `<div class="cv-topic-item"><span class="cv-topic-icon">&#8594;</span>${t}</div>`).join('')}
                 </div>
             </div>
-            <div class="cv-intro-robot robot-float">${chapterRobot(ch.id)}</div>
+            <div class="cv-intro-robot robot-float">${cardDeco(ch.id)}</div>
         </div>`;
 }
 
@@ -541,6 +621,20 @@ function cvRenderBlock(block, ch) {
     if (block.type === 'example') return cvRenderExample(block);
     if (block.type === 'exercise') return cvRenderExercise(block);
     return '';
+}
+
+// Inline **bold** -> <strong>, and split text into paragraphs on blank lines.
+function cvFmt(s) {
+    return String(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+function cvParas(text, cls) {
+    return String(text).split(/\n\n+/).map(block => {
+        const lines = block.split('\n');
+        if (lines.length > 1 && lines.every(l => /^\s*-\s+/.test(l))) {
+            return `<ul class="cv-list">${lines.map(l => `<li>${cvFmt(l.replace(/^\s*-\s+/, '').trim())}</li>`).join('')}</ul>`;
+        }
+        return `<p class="${cls}">${cvFmt(block.replace(/\n/g, ' ').trim())}</p>`;
+    }).join('');
 }
 
 function cvRenderConcept(block, ch) {
@@ -560,7 +654,7 @@ function cvRenderConcept(block, ch) {
         <div>
             <span class="cv-type-badge concept">Concepto</span>
             <h3 class="cv-concept-title">${block.title}</h3>
-            <p class="cv-concept-text">${block.text}</p>
+            ${cvParas(block.text, 'cv-concept-text')}
             ${widget}
         </div>`;
 }
@@ -572,7 +666,7 @@ function cvRenderTip(block) {
                 <span class="cv-alert-icon">&#128161;</span>
                 <div class="cv-alert-content">
                     <div class="cv-alert-label">Consejo pr&aacute;ctico</div>
-                    <p>${block.text}</p>
+                    <p>${cvFmt(block.text)}</p>
                 </div>
             </div>
         </div>`;
@@ -583,7 +677,7 @@ function cvRenderExample(block) {
         <div>
             <span class="cv-type-badge example">Ejemplo pr&aacute;ctico</span>
             <h3 class="cv-concept-title">${block.title}</h3>
-            <p class="cv-concept-text" style="margin-bottom:16px">${block.explanation}</p>
+            <p class="cv-concept-text" style="margin-bottom:16px">${cvFmt(block.explanation)}</p>
             <div class="cv-terminal">
                 <div class="cv-terminal-header">
                     <div class="cv-terminal-dots"><span></span><span></span><span></span></div>
@@ -655,57 +749,94 @@ function cvRenderResources(ch) {
             <h3 class="cv-concept-title">&#127891; Completa tu aprendizaje</h3>
             <p class="cv-concept-text" style="margin-bottom:24px">Recursos recomendados y prompts de la biblioteca para seguir practicando.</p>
             ${res}${rel}
+            ${cvNextChapterCta(ch)}
         </div>`;
+}
+
+function cvNextChapterCta(ch) {
+    const next = LEARNING_PATH.find(c => c.id === ch.id + 1);
+    if (next) {
+        return `<div class="cv-next-chapter" onclick="openChapter(${next.id})">
+            <div class="cv-next-chapter-info">
+                <span class="cv-next-chapter-label">Siguiente cap&iacute;tulo</span>
+                <span class="cv-next-chapter-title">${String(next.id).padStart(2, '0')} &middot; ${next.title}</span>
+            </div>
+            <span class="cv-next-chapter-arrow">&#8594;</span>
+        </div>`;
+    }
+    return `<div class="cv-finish-card">&#127881; &iexcl;Has completado todo el itinerario! Enhorabuena &mdash; ya dominas Claude como HRBP.</div>`;
 }
 
 // --- Interactive widgets ---
 
+// Reusable selectable cards: click a card to reveal its detailed explanation.
+let cvSelStore = {};
+function cvSelectable(items, cols) {
+    const gid = 'sel_' + Math.random().toString(36).slice(2, 7);
+    cvSelStore[gid] = items.map(i => i.detail);
+    const cards = items.map((it, idx) => `
+        <button class="cv-sel-card${idx === 0 ? ' cv-sel-active' : ''}" onclick="cvSelect('${gid}',${idx})">
+            <span class="cv-sel-icon">${it.icon}</span>
+            <span class="cv-sel-title">${it.title}</span>
+            ${it.tag ? `<span class="cv-sel-tag" style="${it.tagStyle || ''}">${it.tag}</span>` : ''}
+        </button>`).join('');
+    return `<div class="cv-selectable" id="${gid}">
+        <div class="cv-sel-cards" style="grid-template-columns:repeat(${cols || items.length},1fr)">${cards}</div>
+        <div class="cv-sel-detail" id="${gid}_d">
+            <span class="cv-sel-detail-hint">&#128072; Toca cada opci&oacute;n para ver el detalle</span>
+            ${items[0].detail}
+        </div>
+    </div>`;
+}
+function cvSelect(gid, idx) {
+    const root = document.getElementById(gid);
+    if (!root) return;
+    [...root.querySelectorAll('.cv-sel-card')].forEach((c, i) => c.classList.toggle('cv-sel-active', i === idx));
+    const d = document.getElementById(gid + '_d');
+    d.innerHTML = cvSelStore[gid][idx];
+    d.classList.remove('cv-sel-detail-anim');
+    void d.offsetWidth;
+    d.classList.add('cv-sel-detail-anim');
+}
+
 function cvWidgetComparison() {
-    return `
-        <div class="cv-comparison">
-            <div class="cv-compare-card">
-                <div class="cv-compare-icon">&#129302;</div>
-                <h5>ChatGPT</h5>
-                <span class="cv-compare-tag" style="background:rgba(16,163,127,.1);color:#10A37F">OpenAI</span>
-                <p>Asistente generalista<br>128K tokens<br>Buenas integraciones visuales (DALL&middot;E)</p>
-            </div>
-            <div class="cv-compare-card highlighted">
-                <div class="cv-compare-icon">&#129504;</div>
-                <h5>Claude (Web)</h5>
-                <span class="cv-compare-tag" style="background:var(--purple-dim);color:var(--purple)">Recomendado</span>
-                <p>Asistente conversacional<br>200K tokens<br>Superior en razonamiento y espa&ntilde;ol</p>
-            </div>
-            <div class="cv-compare-card">
-                <div class="cv-compare-icon">&#128187;</div>
-                <h5>Claude Code</h5>
-                <span class="cv-compare-tag" style="background:rgba(93,180,245,.1);color:var(--blue)">Avanzado</span>
-                <p>Agente en terminal<br>Lee y escribe archivos<br>Automatiza procesos completos</p>
-            </div>
-        </div>`;
+    return cvSelectable([
+        {
+            icon: '&#129302;', title: 'ChatGPT', tag: 'OpenAI',
+            tagStyle: 'background:rgba(16,163,127,.1);color:#10A37F',
+            detail: '<strong>ChatGPT (OpenAI)</strong> es un asistente generalista con una ventana de 128K tokens y un ecosistema amplio de integraciones visuales (DALL&middot;E) y plugins. Es v&aacute;lido para tareas gen&eacute;ricas, pero para el HRBP se queda por detr&aacute;s de Claude en razonamiento sobre documentos largos y en redacci&oacute;n institucional en espa&ntilde;ol.'
+        },
+        {
+            icon: '&#129504;', title: 'Claude (Web)', tag: 'Recomendado',
+            tagStyle: 'background:var(--purple-dim);color:var(--purple)',
+            detail: '<strong>Claude web</strong> es tu herramienta por defecto. Asistente conversacional con <strong>200K tokens</strong> de contexto (&asymp;500 p&aacute;ginas), superior en razonamiento, an&aacute;lisis de documentos largos y redacci&oacute;n en espa&ntilde;ol. Perfecto para pensar, analizar datos y generar documentos. Accedes con SSO @accenture.com.'
+        },
+        {
+            icon: '&#128187;', title: 'Claude Code', tag: 'Avanzado',
+            tagStyle: 'background:rgba(93,180,245,.1);color:var(--blue)',
+            detail: '<strong>Claude Code</strong> es Claude dentro de tu terminal. No solo conversa: lee y escribe archivos reales, ejecuta scripts y automatiza procesos completos de varios pasos. Ideal cuando la tarea toca varios archivos o quieres automatizar algo recurrente. T&uacute; supervisas; &eacute;l ejecuta.'
+        }
+    ]);
 }
 
 function cvWidgetModels() {
-    return `
-        <div class="cv-comparison">
-            <div class="cv-compare-card">
-                <div class="cv-compare-icon">&#9878;&#65039;</div>
-                <h5>Opus</h5>
-                <span class="cv-compare-tag" style="background:rgba(255,107,107,.08);color:#D63031">M&aacute;s potente</span>
-                <p>Razonamiento complejo, an&aacute;lisis profundo, planes estrat&eacute;gicos</p>
-            </div>
-            <div class="cv-compare-card highlighted">
-                <div class="cv-compare-icon">&#9881;&#65039;</div>
-                <h5>Sonnet</h5>
-                <span class="cv-compare-tag" style="background:var(--purple-dim);color:var(--purple)">Equilibrado</span>
-                <p>Trabajo diario del HRBP: redacci&oacute;n, an&aacute;lisis, briefings</p>
-            </div>
-            <div class="cv-compare-card">
-                <div class="cv-compare-icon">&#9889;</div>
-                <h5>Haiku</h5>
-                <span class="cv-compare-tag" style="background:var(--green-dim);color:#00B894">M&aacute;s r&aacute;pido</span>
-                <p>Tareas simples y puntuales: reformular, clasificar, resumir</p>
-            </div>
-        </div>`;
+    return cvSelectable([
+        {
+            icon: '&#9878;&#65039;', title: 'Opus', tag: 'M&aacute;s potente',
+            tagStyle: 'background:rgba(255,107,107,.08);color:#D63031',
+            detail: '<strong>Opus</strong> es el modelo m&aacute;s potente. &Uacute;salo para razonamiento complejo y trabajo de profundidad: arrancar un an&aacute;lisis de cero, construir un plan estrat&eacute;gico elaborado o cuando la calidad del razonamiento importa m&aacute;s que la velocidad.'
+        },
+        {
+            icon: '&#9881;&#65039;', title: 'Sonnet', tag: 'Equilibrado',
+            tagStyle: 'background:var(--purple-dim);color:var(--purple)',
+            detail: '<strong>Sonnet</strong> es el equilibrio perfecto para el d&iacute;a a d&iacute;a del HRBP: redacci&oacute;n, an&aacute;lisis de datos, preparaci&oacute;n de briefings. R&aacute;pido y muy capaz. Si dudas qu&eacute; modelo usar, empieza siempre por aqu&iacute;.'
+        },
+        {
+            icon: '&#9889;', title: 'Haiku', tag: 'M&aacute;s r&aacute;pido',
+            tagStyle: 'background:var(--green-dim);color:#00B894',
+            detail: '<strong>Haiku</strong> es el m&aacute;s r&aacute;pido y ligero. Perfecto para tareas simples y puntuales: reformular un p&aacute;rrafo, clasificar comentarios, hacer res&uacute;menes cortos. Responde casi al instante.'
+        }
+    ]);
 }
 
 function cvWidgetActivation() {
@@ -791,76 +922,87 @@ claude "prompt" # modo one-shot</div>
 }
 
 function cvWidgetWebVsCode() {
-    return `
-        <div class="cv-comparison cols-2">
-            <div class="cv-compare-card">
-                <div class="cv-compare-icon">&#128172;</div>
-                <h5>Claude Web</h5>
-                <span class="cv-compare-tag" style="background:var(--purple-dim);color:var(--purple)">Para pensar</span>
-                <p>Intercambias ideas, texto, documentos en un chat. Genera contenido que t&uacute; aplicas.</p>
-            </div>
-            <div class="cv-compare-card highlighted">
-                <div class="cv-compare-icon">&#128187;</div>
-                <h5>Claude Code</h5>
-                <span class="cv-compare-tag" style="background:rgba(93,180,245,.1);color:var(--blue)">Para ejecutar</span>
-                <p>Lee y escribe archivos reales, ejecuta scripts, automatiza procesos completos.</p>
-            </div>
-        </div>`;
+    return cvSelectable([
+        {
+            icon: '&#128172;', title: 'Claude Web', tag: 'Para pensar',
+            tagStyle: 'background:var(--purple-dim);color:var(--purple)',
+            detail: '<strong>Claude Web es para pensar.</strong> Intercambias ideas, texto y documentos en un chat. Genera contenido que t&uacute; despu&eacute;s copias, ajustas y aplicas. Es tu sitio para explorar, analizar y redactar. No toca nada de tu ordenador: todo se queda en la conversaci&oacute;n.'
+        },
+        {
+            icon: '&#128187;', title: 'Claude Code', tag: 'Para ejecutar',
+            tagStyle: 'background:rgba(93,180,245,.1);color:var(--blue)',
+            detail: '<strong>Claude Code es para ejecutar.</strong> Le das un objetivo y act&uacute;a: lee y escribe archivos reales de tu carpeta, ejecuta scripts y automatiza procesos completos de varios pasos. Ideal para tareas repetitivas o que tocan muchos archivos. T&uacute; supervisas y confirmas.'
+        }
+    ]);
 }
 
 function cvWidgetCraft() {
-    const items = [
-        { l:'C', w:'Contexto', d:'Qui&eacute;n eres, situaci&oacute;n', c:'var(--purple)' },
-        { l:'R', w:'Rol', d:'Papel de Claude', c:'var(--brand-2)' },
-        { l:'A', w:'Acci&oacute;n', d:'Qu&eacute; debe hacer', c:'var(--brand-3)' },
-        { l:'F', w:'Formato', d:'C&oacute;mo lo recibes', c:'var(--blue)' },
-        { l:'T', w:'Tono', d:'Registro adecuado', c:'var(--green)' }
-    ];
-    return `
-        <div class="cv-craft-grid">
-            ${items.map(i => `
-                <div class="cv-craft-item" style="border-color:${i.c}20;background:${i.c}08">
-                    <div class="cv-craft-letter" style="color:${i.c}">${i.l}</div>
-                    <div class="cv-craft-word">${i.w}</div>
-                    <div class="cv-craft-desc">${i.d}</div>
-                </div>`).join('')}
-        </div>`;
+    const L = (l, c) => `<span style="color:${c};font-weight:800;font-size:1.6rem">${l}</span>`;
+    return cvSelectable([
+        {
+            icon: L('C', 'var(--purple)'), title: 'Contexto',
+            detail: '<strong>C &mdash; Contexto.</strong> Qui&eacute;n eres y en qu&eacute; situaci&oacute;n est&aacute;s. <em>Ej: &ldquo;Soy HRBP de una capability de S&amp;PE con 380 personas; preparo el briefing mensual para el MD.&rdquo;</em> Sin contexto, Claude responde gen&eacute;rico.'
+        },
+        {
+            icon: L('R', 'var(--brand-2)'), title: 'Rol',
+            detail: '<strong>R &mdash; Rol.</strong> El papel que quieres que Claude adopte. <em>Ej: &ldquo;Act&uacute;a como un Chief People Officer experimentado.&rdquo;</em> Asignar un rol eleva el nivel y el enfoque de la respuesta.'
+        },
+        {
+            icon: L('A', 'var(--brand-3)'), title: 'Acci&oacute;n',
+            detail: '<strong>A &mdash; Acci&oacute;n.</strong> Qu&eacute; quieres que haga exactamente, con verbos claros. <em>Ej: &ldquo;Identifica las 3 prioridades, construye la narrativa y prop&oacute;n acciones a 90 d&iacute;as.&rdquo;</em>'
+        },
+        {
+            icon: L('F', 'var(--blue)'), title: 'Formato',
+            detail: '<strong>F &mdash; Formato.</strong> C&oacute;mo quieres recibir la respuesta. <em>Ej: &ldquo;Briefing de una p&aacute;gina, con tabla de m&eacute;tricas y secci&oacute;n de pr&oacute;ximos pasos. M&aacute;ximo 300 palabras.&rdquo;</em>'
+        },
+        {
+            icon: L('T', 'var(--green)'), title: 'Tono',
+            detail: '<strong>T &mdash; Tono.</strong> El registro adecuado para tu audiencia. <em>Ej: &ldquo;Ejecutivo y directo, sin jerga de RRHH, pensado para un MD.&rdquo;</em>'
+        }
+    ], 5);
 }
 
 function cvWidgetAgents() {
-    return `
-        <div class="cv-comparison cols-2">
-            <div class="cv-compare-card">
-                <div class="cv-compare-icon">&#129302;</div>
-                <h5>Asistente</h5>
-                <span class="cv-compare-tag" style="background:var(--purple-dim);color:var(--purple)">Claude Web</span>
-                <p>Genera output que t&uacute; aplicas: copias, pegas, ajustas. Ideal para explorar ideas.</p>
-            </div>
-            <div class="cv-compare-card highlighted">
-                <div class="cv-compare-icon">&#129504;</div>
-                <h5>Agente</h5>
-                <span class="cv-compare-tag" style="background:rgba(93,180,245,.1);color:var(--blue)">Claude Code</span>
-                <p>Recibe un objetivo, planifica, lee y escribe archivos, ejecuta e itera. T&uacute; supervisas.</p>
-            </div>
-        </div>`;
+    return cvSelectable([
+        {
+            icon: '&#129302;', title: 'Asistente', tag: 'Claude Web',
+            tagStyle: 'background:var(--purple-dim);color:var(--purple)',
+            detail: '<strong>Un asistente genera output que t&uacute; aplicas.</strong> Le pides algo, te responde, y t&uacute; copias, pegas y ajustas. Trabaja de un paso en un paso, bajo tu direcci&oacute;n constante. Ideal para explorar ideas, redactar borradores o resolver dudas puntuales. Es como tener a Claude web a tu lado.'
+        },
+        {
+            icon: '&#129504;', title: 'Agente', tag: 'Claude Code',
+            tagStyle: 'background:rgba(93,180,245,.1);color:var(--blue)',
+            detail: '<strong>Un agente recibe un objetivo y lo persigue.</strong> Planifica los pasos, lee y escribe archivos reales, ejecuta y va iterando hasta completar la tarea &mdash; mientras t&uacute; supervisas. &Uacute;salo cuando la tarea tiene varios pasos encadenados o quieres automatizar algo recurrente. Es Claude Code trabajando para ti.'
+        }
+    ]);
 }
 
 function cvWidgetGlossary() {
     const terms = [
+        { t:'LLM', d:'Modelo de lenguaje grande: la tecnolog&iacute;a detr&aacute;s de Claude' },
         { t:'Prompt', d:'Mensaje o instrucci&oacute;n que escribes a Claude' },
-        { t:'Token', d:'Unidad m&iacute;nima de texto (1 token &asymp; 4 caracteres)' },
-        { t:'Contexto', d:'Todo lo que Claude &ldquo;ve&rdquo; en una sesi&oacute;n' },
-        { t:'Alucinaci&oacute;n', d:'Info incorrecta generada con aparente confianza' },
-        { t:'CLAUDE.md', d:'Archivo de instrucciones permanentes' },
+        { t:'Token', d:'Unidad m&iacute;nima de texto (1 token &asymp; 4 caracteres &asymp; 0,75 palabras)' },
+        { t:'Ventana de contexto', d:'Todo lo que Claude &ldquo;ve&rdquo; en una sesi&oacute;n; al cerrarla se borra' },
+        { t:'Iterar', d:'Refinar la respuesta en la misma conversaci&oacute;n, sin empezar de cero' },
+        { t:'Alucinaci&oacute;n', d:'Info incorrecta generada con aparente confianza &mdash; verifica siempre' },
+        { t:'Modelo', d:'Versi&oacute;n de Claude: Opus (potente), Sonnet (equilibrado), Haiku (r&aacute;pido)' },
+        { t:'Claude web', d:'La versi&oacute;n de chat en el navegador (claude.ai)' },
+        { t:'Claude Code', d:'Claude en la terminal: lee y escribe archivos reales' },
+        { t:'Asistente vs Agente', d:'Asistente genera y t&uacute; aplicas; agente ejecuta y t&uacute; supervisas' },
+        { t:'CLAUDE.md', d:'Archivo de instrucciones permanentes que Claude lee al arrancar' },
+        { t:'Proyecto', d:'Espacio en Claude con contexto y documentos persistentes' },
+        { t:'Skill', d:'Comando (/nombre) con un flujo de trabajo ya incorporado' },
+        { t:'Prompt chaining', d:'Encadenar prompts: la salida de uno es la entrada del siguiente' },
+        { t:'Anonimizar', d:'Sustituir datos personales por IDs o categor&iacute;as antes de pegar' },
         { t:'MCP', d:'Protocolo para conectar Claude con herramientas externas' },
-        { t:'SSO', d:'Autenticaci&oacute;n &uacute;nica con @accenture.com' },
-        { t:'Modelo', d:'Versi&oacute;n de Claude: Opus, Sonnet o Haiku' }
+        { t:'SSO', d:'Autenticaci&oacute;n &uacute;nica con tu email @accenture.com' },
+        { t:'Enterprise', d:'La licencia corporativa de Accenture: no entrena el modelo con tus datos' }
     ];
     return `
         <div class="cv-info-grid" style="margin-top:20px">
             ${terms.map(t => `
                 <div style="display:flex;gap:10px;padding:10px 14px;background:var(--bg-alt);border-radius:var(--radius-sm);border:1px solid var(--border)">
-                    <strong style="color:var(--purple);font-size:0.82rem;white-space:nowrap;min-width:90px">${t.t}</strong>
+                    <strong style="color:var(--purple);font-size:0.82rem;flex:0 0 96px;line-height:1.3">${t.t}</strong>
                     <span style="font-size:0.82rem;color:var(--text-light)">${t.d}</span>
                 </div>`).join('')}
         </div>`;
@@ -871,3 +1013,13 @@ renderLearningPath();
 renderFilters();
 renderPrompts();
 renderExercises();
+
+// Prompt sorting & view-mode controls
+const _sortSel = document.getElementById('prompt-sort');
+if (_sortSel) _sortSel.addEventListener('change', () => { currentSort = _sortSel.value; renderPrompts(); });
+document.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('.view-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentView = b.dataset.view;
+    renderPrompts();
+}));

@@ -281,11 +281,99 @@ function robotSVG(type = 'teacher', customBadge) {
 
 function chapterRobot(chapterId) {
     const map = {
-        1: 'welcome', 2: 'teacher', 3: 'analyst',
-        4: 'strategist', 5: 'coach', 6: 'data',
-        7: 'coder', 8: 'security', 9: 'spark', 10: 'mentor'
+        1: 'welcome', 2: 'mentor', 3: 'teacher',
+        4: 'analyst', 5: 'spark', 6: 'strategist',
+        7: 'data', 8: 'coder', 9: 'security',
+        10: 'coach', 11: 'teacher'
     };
     return robotSVG(map[chapterId] || 'teacher');
+}
+
+// --- Abstract animated 3D-style decorations (variety beyond robots) ---
+function _gid(p) { return p + Math.random().toString(36).slice(2, 6); }
+function _grad(id) {
+    return `<linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C966FF"/><stop offset="100%" stop-color="#A100FF"/></linearGradient>`;
+}
+
+function decoGear() {
+    const u = _gid('gr');
+    return `<svg viewBox="0 0 100 100" class="deco-svg" aria-hidden="true"><defs>${_grad(u)}</defs>
+        <ellipse cx="50" cy="92" rx="20" ry="4" fill="rgba(161,0,255,.16)"/>
+        <g class="deco-spin" style="transform-origin:50px 48px">
+            <circle cx="50" cy="48" r="30" fill="none" stroke="url(#${u})" stroke-width="14" stroke-dasharray="7 9.8" stroke-linecap="round"/>
+        </g>
+        <circle cx="50" cy="48" r="22" fill="url(#${u})"/>
+        <circle cx="50" cy="48" r="9" fill="#fff" opacity=".92"/>
+    </svg>`;
+}
+
+function decoBars() {
+    const u = _gid('ba');
+    return `<svg viewBox="0 0 100 100" class="deco-svg" aria-hidden="true"><defs>${_grad(u)}</defs>
+        <ellipse cx="50" cy="92" rx="24" ry="4" fill="rgba(161,0,255,.16)"/>
+        <rect x="22" y="40" width="14" height="40" rx="4" fill="url(#${u})"><animate attributeName="height" values="40;24;40" dur="2.4s" repeatCount="indefinite"/><animate attributeName="y" values="40;56;40" dur="2.4s" repeatCount="indefinite"/></rect>
+        <rect x="43" y="28" width="14" height="52" rx="4" fill="url(#${u})" opacity=".85"><animate attributeName="height" values="52;36;52" dur="2s" repeatCount="indefinite"/><animate attributeName="y" values="28;44;28" dur="2s" repeatCount="indefinite"/></rect>
+        <rect x="64" y="48" width="14" height="32" rx="4" fill="url(#${u})" opacity=".7"><animate attributeName="height" values="32;52;32" dur="2.6s" repeatCount="indefinite"/><animate attributeName="y" values="48;28;48" dur="2.6s" repeatCount="indefinite"/></rect>
+    </svg>`;
+}
+
+function decoOrb() {
+    const u = _gid('or');
+    return `<svg viewBox="0 0 100 100" class="deco-svg" aria-hidden="true"><defs>${_grad(u)}</defs>
+        <ellipse cx="50" cy="92" rx="20" ry="4" fill="rgba(161,0,255,.16)"/>
+        <g class="deco-spin-slow" style="transform-origin:50px 48px">
+            <line x1="50" y1="48" x2="22" y2="30" stroke="url(#${u})" stroke-width="2" opacity=".5"/>
+            <line x1="50" y1="48" x2="80" y2="34" stroke="url(#${u})" stroke-width="2" opacity=".5"/>
+            <line x1="50" y1="48" x2="68" y2="76" stroke="url(#${u})" stroke-width="2" opacity=".5"/>
+            <circle cx="22" cy="30" r="6" fill="url(#${u})"/>
+            <circle cx="80" cy="34" r="5" fill="#5df5a0"/>
+            <circle cx="68" cy="76" r="5" fill="#C966FF"/>
+        </g>
+        <circle cx="50" cy="48" r="13" fill="url(#${u})"/>
+        <circle cx="50" cy="48" r="6" fill="#fff" opacity=".9"><animate attributeName="r" values="6;3.5;6" dur="2s" repeatCount="indefinite"/></circle>
+    </svg>`;
+}
+
+function decoTerminal() {
+    return `<svg viewBox="0 0 100 100" class="deco-svg" aria-hidden="true">
+        <ellipse cx="50" cy="92" rx="26" ry="4" fill="rgba(161,0,255,.16)"/>
+        <rect x="16" y="24" width="68" height="52" rx="10" fill="#1a1228" stroke="#A100FF" stroke-width="2.5"/>
+        <circle cx="26" cy="34" r="2.8" fill="#ff5f57"/><circle cx="35" cy="34" r="2.8" fill="#febc2e"/><circle cx="44" cy="34" r="2.8" fill="#28c840"/>
+        <text x="25" y="58" font-size="15" fill="#5df5a0" font-family="monospace">&gt;_</text>
+        <rect x="45" y="48" width="9" height="13" fill="#5df5a0"><animate attributeName="opacity" values="1;1;0;0" dur="1.1s" repeatCount="indefinite"/></rect>
+    </svg>`;
+}
+
+function decoFlow() {
+    const u = _gid('fl');
+    return `<svg viewBox="0 0 100 100" class="deco-svg" aria-hidden="true"><defs>${_grad(u)}</defs>
+        <ellipse cx="50" cy="92" rx="22" ry="4" fill="rgba(161,0,255,.16)"/>
+        <path d="M30 32 L70 50 L34 72" fill="none" stroke="url(#${u})" stroke-width="3" opacity=".45" stroke-linecap="round"/>
+        <rect x="22" y="24" width="17" height="17" rx="5" fill="url(#${u})"/>
+        <rect x="62" y="42" width="17" height="17" rx="5" fill="#5df5a0"/>
+        <rect x="26" y="64" width="17" height="17" rx="5" fill="#C966FF"/>
+        <circle r="4.5" fill="#fff"><animateMotion dur="2.2s" repeatCount="indefinite" path="M30 32 L70 50 L34 72"/></circle>
+    </svg>`;
+}
+
+function decoChat() {
+    const u = _gid('ch');
+    return `<svg viewBox="0 0 100 100" class="deco-svg" aria-hidden="true"><defs>${_grad(u)}</defs>
+        <ellipse cx="50" cy="92" rx="22" ry="4" fill="rgba(161,0,255,.16)"/>
+        <rect x="12" y="22" width="76" height="44" rx="14" fill="url(#${u})"/>
+        <path d="M30 60 L23 80 L50 63 Z" fill="url(#${u})"/>
+        <circle cx="34" cy="44" r="5" fill="#fff"><animate attributeName="opacity" values="1;.3;1" dur="1.2s" repeatCount="indefinite"/></circle>
+        <circle cx="50" cy="44" r="5" fill="#fff"><animate attributeName="opacity" values="1;.3;1" dur="1.2s" begin="0.2s" repeatCount="indefinite"/></circle>
+        <circle cx="66" cy="44" r="5" fill="#fff"><animate attributeName="opacity" values="1;.3;1" dur="1.2s" begin="0.4s" repeatCount="indefinite"/></circle>
+    </svg>`;
+}
+
+// Mix of branded robots and abstract animations, one decoration per chapter card.
+function cardDeco(chapterId) {
+    const abstract = { 2: decoGear, 3: decoChat, 4: decoBars, 7: decoOrb, 8: decoTerminal, 10: decoFlow };
+    if (abstract[chapterId]) return abstract[chapterId]();
+    const robots = { 1: 'welcome', 5: 'spark', 6: 'strategist', 9: 'security', 11: 'mentor' };
+    return robotSVG(robots[chapterId] || 'teacher');
 }
 
 function slideRobot(blockType) {

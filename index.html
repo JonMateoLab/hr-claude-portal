@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Claude para HR — Software &amp; Platform Engineering — Accenture</title>
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="styles.css?v=202606091952">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -42,7 +42,7 @@
             </div>
             <div class="hero-stats">
                 <div class="stat">
-                    <span class="stat-number">10</span>
+                    <span class="stat-number">11</span>
                     <span class="stat-label">Capitulos formativos</span>
                 </div>
                 <div class="stat">
@@ -60,9 +60,10 @@
     <!-- ITINERARIO FORMATIVO -->
     <section id="itinerario" class="section">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header acc-purple">
+                <span class="section-eyebrow">Itinerario</span>
                 <h2>Itinerario Formativo</h2>
-                <p>10 capitulos para dominar Claude como HRBP. Avanza a tu ritmo, cada capitulo se apoya en el anterior.</p>
+                <p>11 capitulos para dominar Claude como HRBP. Avanza a tu ritmo, cada capitulo se apoya en el anterior.</p>
             </div>
             <div class="learning-path" id="learning-path"></div>
         </div>
@@ -71,7 +72,8 @@
     <!-- GENERADOR DE PROMPTS -->
     <section id="generador" class="section section-alt">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header acc-blue">
+                <span class="section-eyebrow">Herramienta</span>
                 <h2>Generador de Prompts</h2>
                 <p>Selecciona que necesitas y te generamos el prompt perfecto para tu caso.</p>
             </div>
@@ -89,7 +91,7 @@
                             <option value="conversacion">Preparar una conversacion dificil</option>
                             <option value="presentacion">Crear una presentacion HTML</option>
                             <option value="engagement">Plan de engagement / retention</option>
-                            <option value="politica">Crear/revisar politica HR</option>
+                            <option value="politica">Resolver dudas sobre politicas y procedimientos</option>
                         </select>
                     </div>
 
@@ -143,7 +145,8 @@
     <!-- EJERCICIOS PRACTICOS -->
     <section id="ejercicios" class="section">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header acc-green">
+                <span class="section-eyebrow">Practica</span>
                 <h2>Ejercicios Practicos</h2>
                 <p>Aprende haciendo. Tutoriales paso a paso para tu dia a dia como HRBP.</p>
             </div>
@@ -154,11 +157,26 @@
     <!-- BIBLIOTECA DE PROMPTS -->
     <section id="prompts" class="section section-alt">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header acc-pink">
+                <span class="section-eyebrow">Biblioteca</span>
                 <h2>Biblioteca de Prompts HR</h2>
-                <p>152 prompts organizados por categoria. Copia, pega y adapta.</p>
+                <p>152 prompts listos para el dia a dia del HRBP de S&amp;PE. Filtra por categoria, copia y adapta. Marca tus favoritos con la &#9733; para tenerlos siempre a mano. Y si buscas algo a medida, usa el <a href="#generador">Generador de Prompts</a>.</p>
             </div>
             <div class="filter-bar" id="filter-bar"></div>
+            <div class="prompts-toolbar">
+                <div class="sort-control">
+                    <label for="prompt-sort">Ordenar:</label>
+                    <select id="prompt-sort">
+                        <option value="cat">Categoria</option>
+                        <option value="title">Titulo (A-Z)</option>
+                        <option value="level">Nivel</option>
+                    </select>
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="detailed">Detallada</button>
+                    <button class="view-btn" data-view="compact">Compacta</button>
+                </div>
+            </div>
             <div class="prompts-grid" id="prompts-grid"></div>
         </div>
     </section>
@@ -166,7 +184,8 @@
     <!-- TIPS -->
     <section class="section">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header acc-amber">
+                <span class="section-eyebrow">Consejos</span>
                 <h2>Tips para usar Claude como HRBP</h2>
                 <p>Consejos rapidos para sacarle el maximo partido en S&amp;PE.</p>
             </div>
@@ -199,6 +218,7 @@
     <footer class="footer">
         <div class="container">
             <p>Portal interno de IA para <strong>HR — Software &amp; Platform Engineering</strong> — Accenture</p>
+            <p class="footer-disclaimer">Material formativo no oficial, creado por y para el equipo de HRBP de S&amp;PE. No representa políticas oficiales de Accenture ni está respaldado por Anthropic. Los ejemplos, nombres y datos son ilustrativos y no corresponden a personas reales. Todo contenido generado con IA debe revisarse por un profesional de HR y validarse con Legal o Employee Relations antes de usarse en decisiones sobre personas.</p>
         </div>
     </footer>
 
@@ -213,12 +233,12 @@
     <!-- TOAST -->
     <div class="toast" id="toast">Prompt copiado al portapapeles</div>
 
-    <script src="particles.js"></script>
-    <script src="logos.js"></script>
-    <script src="data.js"></script>
-    <script src="exercises.js"></script>
-    <script src="learning-path.js"></script>
-    <script src="robots.js"></script>
-    <script src="app.js"></script>
+    <script src="particles.js?v=202606091952"></script>
+    <script src="logos.js?v=202606091952"></script>
+    <script src="data.js?v=202606091952"></script>
+    <script src="exercises.js?v=202606091952"></script>
+    <script src="learning-path.js?v=202606091952"></script>
+    <script src="robots.js?v=202606091952"></script>
+    <script src="app.js?v=202606091952"></script>
 </body>
 </html>

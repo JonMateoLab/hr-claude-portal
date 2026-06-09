@@ -11,33 +11,39 @@ const LEARNING_PATH = [
             "Qué es un modelo de lenguaje grande (LLM) y por qué importa para HRBP",
             "Claude vs. otras IAs: posicionamiento y diferencias clave",
             "El modelo de conversación: cómo funciona el chat con Claude",
-            "Tour por la interfaz de claude.ai"
+            "Tour por la interfaz de claude.ai",
+            "Glosario esencial: el vocabulario que vas a oír"
         ],
         content: [
             {
                 type: "concept",
                 title: "¿Qué es un LLM y qué significa para tu trabajo?",
-                text: "Un modelo de lenguaje grande (LLM) es un sistema entrenado con enormes cantidades de texto que aprende a predecir y generar lenguaje humano con coherencia. Para un HRBP, esto significa tener acceso a un colaborador que puede leer un documento de 50 páginas, extraer los puntos clave y redactar un resumen ejecutivo en minutos. No es magia: es estadística avanzada al servicio de tu productividad."
+                text: "Un **modelo de lenguaje grande (LLM)** es un sistema entrenado con cantidades enormes de texto que aprende a predecir y generar lenguaje humano con coherencia.\n\n¿Qué significa eso para ti? Que tienes a tu lado un colaborador capaz de **leer un documento de 50 páginas, extraer lo importante y redactarte un resumen ejecutivo en minutos**.\n\nNo es magia: es estadística avanzada al servicio de tu productividad."
             },
             {
                 type: "concept",
                 title: "Claude vs. otras IAs: ¿qué lo hace diferente?",
-                text: "Mientras que otras herramientas priorizan la velocidad o la creatividad sin filtros, Claude está diseñado para ser preciso, honesto y útil en contextos profesionales. Anthropic construyó Claude con principios de seguridad y utilidad que lo hacen especialmente adecuado para tareas sensibles de RRHH: analizar datos de personas, redactar comunicaciones internas o preparar briefings para stakeholders. Claude reconoce cuando no sabe algo y lo dice, en lugar de inventar respuestas."
+                text: "Mientras otras herramientas priorizan la velocidad o la creatividad sin filtros, **Claude está diseñado para ser preciso, honesto y útil** en contextos profesionales.\n\nAnthropic lo construyó con principios de seguridad que lo hacen especialmente adecuado para tareas sensibles de RRHH: analizar datos de personas, redactar comunicaciones internas o preparar briefings para stakeholders.\n\nUn detalle que marca la diferencia: cuando Claude no sabe algo, **lo dice** — en lugar de inventarse una respuesta."
             },
             {
                 type: "concept",
                 title: "Claude vs ChatGPT vs Claude Code: elige la herramienta correcta",
-                text: "En Accenture conviven tres herramientas de IA principales. ChatGPT (OpenAI) es un asistente generalista con 128K tokens y buenas integraciones visuales (DALL·E). Claude (web/app) es un asistente conversacional con 200K tokens de contexto, superior en razonamiento, documentos largos y redacción institucional en español — ideal para el HRBP que necesita analizar y generar documentos. Claude Code (CLI) es un agente en tu terminal que lee y escribe archivos reales, ejecuta scripts y automatiza procesos completos — sin equivalente en el mercado. La regla práctica: usa Claude web para pensar y producir documentos, y Claude Code cuando necesites actuar sobre archivos reales de tu máquina."
+                text: "En Accenture conviven tres herramientas de IA principales, y elegir bien te ahorra tiempo.\n\nLa regla práctica es sencilla: usa **Claude web para pensar y producir documentos**, y **Claude Code cuando necesites actuar sobre archivos reales** de tu máquina.\n\nToca cada tarjeta para ver en qué destaca cada una 👇"
             },
             {
                 type: "concept",
                 title: "Los tres modelos: Opus, Sonnet y Haiku",
-                text: "Claude tiene tres variantes. Opus es el más potente, ideal para razonamiento complejo y tareas que requieren profundidad analítica — úsalo cuando arranques un análisis de cero o necesites un plan estratégico elaborado. Sonnet es el equilibrio entre rendimiento y velocidad, perfecto para el trabajo diario del HRBP: redacción, análisis de datos, preparación de briefings. Haiku es el más rápido y ligero, bueno para tareas simples y puntuales como reformular un párrafo o clasificar información. En la interfaz de Claude puedes cambiar de modelo en cualquier momento con /model."
+                text: "Claude tiene tres variantes, y puedes cambiar de una a otra en cualquier momento con **/model**.\n\nNo necesitas dominar la diferencia desde el primer día: si dudas, **Sonnet** cubre prácticamente todo el trabajo diario del HRBP.\n\nToca cada modelo para saber cuándo usarlo 👇"
             },
             {
                 type: "concept",
                 title: "Activación de Claude Enterprise en Accenture",
-                text: "Accenture tiene un acuerdo Enterprise con Anthropic. El acceso es mediante SSO corporativo — no necesitas crear una cuenta personal. El proceso tiene dos fases: primero, revisar las Responsible AI Use Guidelines, firmar el Responsible AI Agreement y solicitar licencia en el Software Catalog (necesitarás un WBS). Una vez tengas licencia, accede a claude.ai con tu email @accenture.com y haz clic en 'Continue with SSO'. Para Claude Code, selecciona la opción 'Enterprise' durante el login — si seleccionas 'Personal' no quedará vinculado a tu licencia corporativa. El soporte técnico es vía ServiceNow, categoría 'Claude Enterprise'."
+                text: "Accenture tiene un **acuerdo Enterprise con Anthropic**: accedes con tu SSO corporativo, sin crear ninguna cuenta personal.\n\nUna ventaja clave de Enterprise: **tus conversaciones no se usan para entrenar el modelo**.\n\nEl proceso tiene dos fases. Primero, los permisos: revisar las Responsible AI Use Guidelines, firmar el Responsible AI Agreement y solicitar licencia en el Software Catalog (necesitarás un WBS). Después, el acceso: entra en claude.ai con tu email @accenture.com y haz clic en 'Continue with SSO'.\n\nDos avisos: para Claude Code, elige la opción 'Enterprise' en el login (si eliges 'Personal' no quedará vinculado a tu licencia). Y el soporte técnico es vía ServiceNow, categoría 'Claude Enterprise'."
+            },
+            {
+                type: "concept",
+                title: "Glosario esencial: el vocabulario de Claude",
+                text: "Antes de seguir, estos son los términos que vas a oír una y otra vez al trabajar con Claude. No hace falta que los memorices — vuelve a esta página siempre que necesites refrescar alguno. Lo importante ahora es que te suenen para que no te pierdas en los próximos capítulos."
             },
             {
                 type: "tip",
@@ -82,6 +88,70 @@ const LEARNING_PATH = [
     },
     {
         id: 2,
+        icon: "&#9881;&#65039;",
+        title: "Prepara tu entorno y tu rol",
+        subtitle: "Configura Claude para que te conozca: tu contexto, tu Proyecto base y los ajustes que te harán ir más rápido",
+        duration: "20 min",
+        difficulty: "basico",
+        intro: "Claude rinde muchísimo mejor cuando sabe quién eres. Dedicar 20 minutos a configurar tu entorno al principio te ahorra repetir tu contexto en cada conversación durante meses. En este capítulo montas tu ficha de contexto como HRBP, creas un Proyecto base en Claude y dejas listos los ajustes que marcan la diferencia en el día a día.",
+        topics: [
+            "Por qué darle contexto a Claude lo cambia todo",
+            "Tu ficha de contexto como HRBP de S&PE",
+            "Crea tu Proyecto base en Claude",
+            "Ajustes recomendados para ir más rápido"
+        ],
+        content: [
+            {
+                type: "concept",
+                title: "Por qué el contexto lo cambia todo",
+                text: "Un Claude que no sabe quién eres te da respuestas de manual. Un Claude que sabe que eres **HRBP de Software & Platform Engineering**, con una capability de cientos de personas y un MD exigente, te da respuestas que puedes usar tal cual.\n\nLa diferencia no está en el modelo: está en el **contexto que le das**. Y ese contexto no hace falta repetirlo cada vez — puedes dejarlo guardado.\n\nEste capítulo va justo de eso: configurarte una vez para trabajar mejor siempre."
+            },
+            {
+                type: "concept",
+                title: "Tu ficha de contexto como HRBP",
+                text: "Tu **ficha de contexto** es un párrafo que resume quién eres profesionalmente. Inclúyela al inicio de una conversación nueva o, mejor, guárdala en tu Proyecto. Debería cubrir:\n\n- **Tu rol** — HRBP de Software & Platform Engineering en Accenture\n- **Tu capability** — tamaño aproximado, niveles, perfiles principales\n- **Tus stakeholders** — MD, People Leads, mentores y otros departamentos internos\n- **Qué trabajas** — talent review, engagement, comunicaciones, people analytics\n- **Tu sistema de datos** — Workday\n- **Cómo te gusta el output** — directo, ejecutivo, sin jerga de RRHH\n\nCon esto, Claude adapta el tono, los ejemplos y el nivel de detalle a tu realidad."
+            },
+            {
+                type: "concept",
+                title: "Crea tu Proyecto base en Claude",
+                text: "Un **Proyecto** en Claude es un espacio con memoria: guardas instrucciones permanentes y documentos de referencia, y todas las conversaciones dentro heredan ese contexto.\n\nCrea uno llamado «HRBP S&PE — Workspace». En sus instrucciones, pega tu ficha de contexto. Sube 2-3 documentos que uses siempre (una guía de carrera, una plantilla de comunicado, el calendario de procesos de people).\n\nA partir de ahí, **cada conversación dentro del Proyecto ya sabe quién eres** — sin repetir nada. Es la inversión de 10 minutos con mayor retorno de todo el itinerario."
+            },
+            {
+                type: "tip",
+                text: "Tres ajustes que te harán ir más rápido desde el primer día: **(1)** deja **Sonnet** como modelo por defecto, cubre casi todo; **(2)** pon nombre a tus conversaciones para reencontrarlas; **(3)** ten a mano tus prompts más usados marcándolos como favoritos en la Biblioteca de este portal. Pequeños hábitos que suman mucho a lo largo de la semana."
+            },
+            {
+                type: "example",
+                title: "Ejemplo: tu ficha de contexto lista para usar",
+                prompt: "Antes de empezar, te doy mi contexto para que adaptes todas tus respuestas:\n\nSoy HRBP en Accenture, en la capability de Software & Platform Engineering (unas 380 personas: Analysts, Consultants, Managers y Senior Managers). Mis stakeholders son el MD de la capability, los People Leads y los mentores de los empleados; también coordino con otros departamentos internos de Accenture. Mi trabajo se centra en talent review, engagement, comunicaciones internas y people analytics. Mis datos de workforce salen de Workday. Prefiero respuestas directas y ejecutivas, sin jerga de RRHH.\n\nA partir de ahora, ten esto en cuenta en todo lo que te pida. ¿Entendido?",
+                explanation: "Esta es una ficha de contexto lista para adaptar. Pégala al inicio de una conversación nueva o, mejor, guárdala en las instrucciones de tu Proyecto base para no repetirla nunca más."
+            },
+            {
+                type: "exercise",
+                title: "Monta tu entorno en 15 minutos",
+                instructions: "1. Crea un Proyecto en Claude llamado 'HRBP S&PE — Workspace'. 2. Adapta la ficha de contexto del ejemplo con tus datos reales y pégala en las instrucciones del Proyecto. 3. Sube 2-3 documentos de referencia que uses con frecuencia. 4. Abre una conversación dentro del Proyecto y pregúntale algo de tu día a día sin darle contexto: comprueba que ya responde como si te conociera. 5. Marca en la Biblioteca de prompts 3 favoritos que creas que vas a usar esta semana."
+            }
+        ],
+        resources: [
+            {
+                name: "Anthropic Academy: Claude 101",
+                url: "https://anthropic.skilljar.com/",
+                type: "curso",
+                desc: "Primeros pasos con Claude, incluida la organización del trabajo en Proyectos",
+                free: true
+            },
+            {
+                name: "Claude for HR: Tutorial Oficial",
+                url: "https://claude.com/resources/tutorials/claude-for-human-resources",
+                type: "guia",
+                desc: "Casos de uso de Claude en RRHH — útil para definir tu contexto como HRBP",
+                free: true
+            }
+        ],
+        relatedPrompts: []
+    },
+    {
+        id: 3,
         icon: "&#9997;&#65039;",
         title: "El arte del prompting",
         subtitle: "Cómo hablarle a Claude para obtener resultados que realmente puedes usar",
@@ -98,17 +168,17 @@ const LEARNING_PATH = [
             {
                 type: "concept",
                 title: "El framework CRAFT para HRBP",
-                text: "CRAFT son las cinco dimensiones de un prompt efectivo: Contexto (quién eres, qué situación tienes), Rol (qué papel quieres que Claude juegue), Acción (qué quieres que haga exactamente), Formato (cómo quieres recibir la respuesta), Tono (el registro adecuado para tu audiencia). Un prompt que incluye todos estos elementos elimina la ambigüedad y te da respuestas utilizables en lugar de genéricas."
+                text: "**CRAFT** es la receta de un buen prompt: cinco ingredientes que, juntos, eliminan la ambigüedad.\n\nUn prompt que los incluye todos te da respuestas **utilizables**, no genéricas. No hace falta usar siempre los cinco, pero cuantos más, mejor.\n\nToca cada letra para verla con un ejemplo 👇"
             },
             {
                 type: "concept",
                 title: "Iterar como conversación, no como búsqueda",
-                text: "Muchos usuarios cometen el error de tratar Claude como un buscador: hacen una pregunta, no les gusta el resultado y empiezan de nuevo. La clave está en iterar sobre la misma conversación: 'Bien, pero ahora hazlo más conciso', 'Adapta esto para un MD que prefiere bullet points', 'Añade una sección de riesgos'. Claude recuerda todo el contexto de la conversación, así que puedes ir refinando sin repetirte."
+                text: "El error más común es tratar a Claude como un buscador: preguntas, no te convence y empiezas de cero.\n\nLa clave es **iterar sobre la misma conversación**: «bien, pero hazlo más conciso», «adáptalo para un MD que prefiere bullet points», «añade una sección de riesgos».\n\nClaude recuerda todo el contexto, así que vas refinando sin repetirte. **La primera respuesta es un borrador, no el resultado final.**"
             },
             {
                 type: "concept",
                 title: "Etiquetas XML para peticiones complejas",
-                text: "Cuando tu petición tiene múltiples partes o quieres que Claude procese datos específicos, las etiquetas XML te ayudan a estructurar el input. Por ejemplo, puedes usar <datos>, <contexto>, <instrucciones> para separar claramente qué es información de entrada y qué es la tarea. Claude las reconoce de forma nativa y las usa para organizar mejor su respuesta."
+                text: "Cuando tu petición tiene varias partes o incluye datos, las **etiquetas XML** te ayudan a separar qué es información y qué es la tarea.\n\nPor ejemplo, envuelve cada bloque en su etiqueta: &lt;datos&gt;, &lt;contexto&gt; e &lt;instrucciones&gt;.\n\nClaude las reconoce de forma nativa y las usa para organizar mejor su respuesta — muy útil cuando pegas tablas o documentos largos."
             },
             {
                 type: "example",
@@ -141,7 +211,7 @@ const LEARNING_PATH = [
         relatedPrompts: ["hr1", "hr2", "co1"]
     },
     {
-        id: 3,
+        id: 4,
         icon: "&#128202;",
         title: "Claude para analizar datos",
         subtitle: "De tablas en Excel a insights accionables en minutos",
@@ -158,12 +228,12 @@ const LEARNING_PATH = [
             {
                 type: "concept",
                 title: "Cómo pasar datos a Claude de forma efectiva",
-                text: "Claude puede leer tablas en formato de texto plano (copiar y pegar desde Excel o Google Sheets funciona bien), CSV, o incluso tablas de Markdown. La clave es dar contexto antes de los datos: qué representan las columnas, qué período cubren, qué unidades tienen los números. Sin ese contexto, Claude puede hacer suposiciones incorrectas. Siempre termina el bloque de datos con una instrucción clara sobre qué quieres analizar."
+                text: "Claude lee tablas en texto plano (copiar y pegar desde Excel o Workday funciona bien), CSV o Markdown.\n\nLa clave: **da contexto antes de los datos**. Qué representan las columnas, qué periodo cubren, en qué unidades están los números. Sin contexto, puede hacer suposiciones incorrectas.\n\nY termina siempre el bloque de datos con una **instrucción clara** de qué quieres analizar."
             },
             {
                 type: "concept",
                 title: "Pedir métricas específicas vs. análisis libre",
-                text: "Puedes pedirle a Claude métricas concretas (attrition rate, headcount por grade, ratio de promociones) o dejar que identifique patrones de forma abierta. Para el trabajo diario de HRBP, suele ser más eficiente empezar con métricas específicas que ya necesitas y luego hacer una pregunta abierta de 'qué más llama tu atención en estos datos'. Esta secuencia te da rigor primero y descubrimiento después."
+                text: "Tienes dos modos de pedir análisis: **concreto** (interpretar el attrition por nivel, comparar headcount por grade) o **abierto** (que Claude detecte patrones por su cuenta).\n\nLo más eficiente para el día a día es combinarlos: empieza por lo concreto que ya necesitas y cierra con un «¿qué más te llama la atención en estos datos?».\n\nAsí consigues **rigor primero y descubrimiento después**."
             },
             {
                 type: "tip",
@@ -172,13 +242,13 @@ const LEARNING_PATH = [
             {
                 type: "example",
                 title: "Ejemplo práctico",
-                prompt: "Tengo datos de workforce de mi capability de Software & Platform Engineering. Voy a pegar una tabla con la siguiente estructura: Nivel, Headcount, Joiners últimos 6 meses, Leavers últimos 6 meses, Headcount objetivo fin de año.\n\n<datos>\nAnalyst, 45, 12, 8, 50\nSenior Analyst, 78, 15, 18, 80\nConsultant, 95, 10, 22, 90\nSenior Consultant, 67, 5, 12, 70\nManager, 42, 3, 6, 45\nSenior Manager, 28, 2, 3, 30\n</datos>\n\nPor favor:\n1. Calcula el attrition rate por nivel (leavers/headcount en %)\n2. Identifica los tres niveles con mayor riesgo desde perspectiva de talent\n3. Estima si estamos en camino de cumplir el headcount objetivo a fin de año asumiendo las tendencias actuales\n4. Dame tus observaciones más relevantes en un párrafo ejecutivo de máximo 100 palabras",
-                explanation: "Este prompt estructura los datos con etiquetas XML, proporciona contexto claro sobre las columnas y pide un análisis en cuatro partes bien diferenciadas, incluyendo un cierre ejecutivo listo para usar."
+                prompt: "Tengo datos de workforce de mi capability de Software & Platform Engineering, exportados de Workday. Voy a pegar una tabla con la siguiente estructura: Nivel, Headcount, Attrition rate últimos 6 meses (ya calculado por Workday), Joiners últimos 6 meses, Headcount objetivo fin de año.\n\n<datos>\nAnalyst, 45, 17.8%, 12, 50\nSenior Analyst, 78, 23.1%, 15, 80\nConsultant, 95, 23.2%, 10, 90\nSenior Consultant, 67, 17.9%, 5, 70\nManager, 42, 14.3%, 3, 45\nSenior Manager, 28, 10.7%, 2, 30\n</datos>\n\nLas tasas de attrition ya vienen calculadas de Workday, no las recalcules. Por favor:\n1. Interpreta los datos: ¿qué niveles están en mayor riesgo desde la perspectiva de talent y por qué?\n2. Cruza el attrition con el gap respecto al headcount objetivo: ¿dónde tenemos el problema más serio para llegar al objetivo de fin de año?\n3. Señala patrones o anomalías que merezcan una conversación con el People Lead\n4. Dame tus observaciones más relevantes en un párrafo ejecutivo de máximo 100 palabras",
+                explanation: "Las tasas de attrition ya vienen calculadas de Workday, así que el prompt le pide a Claude que las interprete y las cruce con el resto de métricas — no que las recalcule. Estructura los datos con etiquetas XML y pide un análisis en cuatro partes con un cierre ejecutivo listo para usar."
             },
             {
                 type: "exercise",
                 title: "Analiza datos reales de tu capability",
-                instructions: "1. Extrae de tu sistema de RRHH (SAP, Workday o el que uses) una tabla sencilla con al menos headcount y una métrica de movimiento (joiners/leavers) por nivel o por proyecto. 2. Anonimiza si necesario. 3. Pégala en Claude con el formato del ejemplo, adaptado a tus columnas reales. 4. Pide el análisis básico. 5. Luego añade una segunda pregunta: '¿Qué preguntas adicionales deberíamos hacernos con estos datos?' Esto te mostrará cómo Claude puede ayudarte a pensar más allá de los números inmediatos."
+                instructions: "1. Exporta de Workday una tabla sencilla de tu capability con headcount, attrition rate (que Workday ya te da) y movimientos (joiners/leavers) por nivel. 2. Anonimiza si hace falta (para este análisis no necesitas nombres). 3. Pégala en Claude con el formato del ejemplo, adaptada a tus columnas reales, e indícale que las tasas ya vienen calculadas. 4. Pide la interpretación de patrones y riesgos. 5. Luego añade una segunda pregunta: '¿Qué preguntas adicionales deberíamos hacernos con estos datos?' Esto te mostrará cómo Claude puede ayudarte a pensar más allá de los números inmediatos."
             }
         ],
         resources: [
@@ -200,13 +270,13 @@ const LEARNING_PATH = [
         relatedPrompts: ["pa1", "pa2", "pa3", "pa5", "cc1", "cc3"]
     },
     {
-        id: 4,
+        id: 5,
         icon: "&#128196;",
         title: "Crear documentos y presentaciones",
-        subtitle: "Emails, políticas, comunicados y presentaciones HTML con transiciones",
+        subtitle: "Emails, comunicados y presentaciones HTML con transiciones",
         duration: "25 min",
         difficulty: "intermedio",
-        intro: "Un HRBP dedica una parte significativa de su tiempo a producir documentos: comunicaciones internas, actualizaciones de políticas, presentaciones para el leadership. Claude puede acelerar drásticamente esta parte del trabajo si sabes cómo estructurar tus peticiones y cómo iterar sobre los borradores. En este capítulo también aprenderás a generar presentaciones en HTML que puedes exportar a PDF directamente desde el navegador.",
+        intro: "Un HRBP dedica una parte significativa de su tiempo a producir documentos: comunicaciones internas, respuestas a dudas de empleados sobre políticas y procedimientos, presentaciones para el leadership. Claude puede acelerar drásticamente esta parte del trabajo si sabes cómo estructurar tus peticiones y cómo iterar sobre los borradores. En este capítulo también aprenderás a generar presentaciones en HTML que puedes exportar a PDF directamente desde el navegador.",
         topics: [
             "Prompting para estructura y tono en documentos",
             "Control del registro: de informal a ejecutivo",
@@ -217,12 +287,17 @@ const LEARNING_PATH = [
             {
                 type: "concept",
                 title: "Estructurar peticiones de documentos",
-                text: "Para obtener documentos de calidad, Claude necesita saber: el tipo de documento (email, policy brief, comunicado), la audiencia (equipo operativo, People Leads, MD, toda la capability), el objetivo del documento (informar, pedir acción, alinear), el tono (formal, cercano, urgente) y cualquier restricción específica (máximo número de palabras, incluir fecha límite, no mencionar nombres). Cuantos más de estos elementos des, menos iteraciones necesitarás."
+                text: "Para que un documento salga bien a la primera, dile a Claude cinco cosas:\n\n- **Tipo** — email, comunicado, one-pager\n- **Audiencia** — equipo, People Leads, MD, toda la capability\n- **Objetivo** — informar, pedir acción, alinear\n- **Tono** — formal, cercano, urgente\n- **Restricciones** — máximo de palabras, fecha límite, no mencionar nombres\n\nCuantos más de estos elementos des, menos vueltas tendrás que dar después."
             },
             {
                 type: "concept",
                 title: "Presentaciones HTML: la alternativa a PowerPoint",
-                text: "Claude puede generar presentaciones completas en HTML con diseño visual, transiciones entre diapositivas y elementos interactivos. Solo tienes que abrirlas en el navegador y usar Ctrl+P (o Cmd+P) para exportarlas a PDF. Son especialmente útiles para comunicaciones rápidas que no requieren el nivel de diseño de una presentación corporativa formal. Claude puede incluir tablas, gráficos de texto, listas visuales y secciones de puntos clave."
+                text: "Claude puede generar presentaciones completas en **HTML**: un único archivo que abres en el navegador, **sin PowerPoint ni ningún software instalado**.\n\n¿Por qué es tan buena alternativa?\n\n- **Visual** — diseño limpio, colores corporativos, iconos\n- **Dinámica** — transiciones, gráficos animados e interactividad que PowerPoint no permite\n- **Eficiente** — cambiar un dato es editar una línea, no rehacer una slide\n\nLa abres con doble clic, navegas con las flechas y, cuando quieras una versión estática, Ctrl+P para exportarla a PDF. Ideal para comunicaciones rápidas, dashboards de people analytics o kick-offs."
+            },
+            {
+                type: "concept",
+                title: "Cómo pedir HTMLs más profesionales",
+                text: "Para que un HTML pase de «correcto» a «profesional», pide explícitamente estos detalles:\n\n- **Paleta y marca** — colores corporativos (púrpura Accenture #A100FF, negro, blanco) y buen contraste\n- **Tipografía y aire** — una fuente limpia, jerarquía clara de títulos y espacio en blanco generoso\n- **Transiciones suaves** — fade o slide entre diapositivas y animaciones sutiles al entrar los elementos\n- **Elementos visuales** — gráficos de barras en CSS, semáforos de métricas, iconos y tarjetas\n- **Navegación** — flechas del teclado, barra de progreso y número de slide\n\nUn truco que sube mucho la calidad: pídele que se **inspire en una keynote moderna** y que **itere el diseño contigo** («hazlo más minimalista», «más espacio entre secciones», «destaca el dato clave en grande»)."
             },
             {
                 type: "tip",
@@ -231,7 +306,7 @@ const LEARNING_PATH = [
             {
                 type: "example",
                 title: "Ejemplo práctico",
-                prompt: "Necesito dos outputs para la misma situación:\n\n<contexto>\nSituación: Lanzamos un nuevo proceso de Performance Review que arranca en 3 semanas. Es la primera vez que usamos este proceso en nuestra capability de Software & Platform Engineering. Habrá sesiones de calibración por grade band.\n</contexto>\n\nOutput 1: Comunicado interno para enviar por email a todos los 380 profesionales de la capability. Tono: claro, cercano pero profesional. Máximo 200 palabras. Debe incluir fechas clave, qué se espera de ellos y un contact para preguntas.\n\nOutput 2: Una presentación HTML de 5 slides para usar en el kick-off con People Leads la semana que viene. Incluye: agenda, por qué este proceso, timeline, responsabilidades de los People Leads, próximos pasos. Diseño limpio con colores corporativos azul/blanco. Con transiciones CSS entre slides.",
+                prompt: "Necesito dos outputs para la misma situación:\n\n<contexto>\nSituación: Lanzamos un nuevo proceso de check-ins de desarrollo trimestrales que arranca en 3 semanas. Es la primera vez que lo usamos en nuestra capability de Software & Platform Engineering. Cada People Lead tendrá que mantener una conversación estructurada de desarrollo con cada miembro de su equipo.\n</contexto>\n\nOutput 1: Comunicado interno para enviar por email a todos los 380 profesionales de la capability. Tono: claro, cercano pero profesional. Máximo 200 palabras. Debe incluir fechas clave, qué se espera de ellos y un contact para preguntas.\n\nOutput 2: Una presentación HTML de 5 slides para usar en el kick-off con People Leads la semana que viene. Incluye: agenda, por qué este proceso, timeline, responsabilidades de los People Leads, próximos pasos. Diseño limpio con colores corporativos azul/blanco. Con transiciones CSS entre slides.",
                 explanation: "Este prompt solicita dos formatos distintos para la misma situación comunicativa, demostrando cómo Claude puede adaptar el mismo contenido a audiencias y canales diferentes en una sola petición."
             },
             {
@@ -252,7 +327,7 @@ const LEARNING_PATH = [
         relatedPrompts: ["co1", "co2", "co3", "co4", "pr1", "pr2", "cc13"]
     },
     {
-        id: 5,
+        id: 6,
         icon: "&#129504;",
         title: "Claude como HRBP advisor",
         subtitle: "Tu compañero de pensamiento estratégico para briefings, decisiones y narrativas",
@@ -261,7 +336,7 @@ const LEARNING_PATH = [
         intro: "El mayor salto de productividad para un HRBP no viene de usar Claude para redactar textos más rápido, sino de usarlo como socio de pensamiento estratégico. Antes de una reunión con el MD, antes de tomar una decisión de talento compleja, antes de preparar una recomendación: Claude puede ayudarte a estructurar el análisis, anticipar preguntas y construir una narrativa con datos. En este capítulo aprendes a usar Claude no como herramienta de escritura, sino como tu mejor sparring partner profesional.",
         topics: [
             "Claude como asesor estratégico, no solo como redactor",
-            "Cómo enmarcar decisiones complejas de talento",
+            "Cómo construir propuestas de estrategia: upskilling, coberturas y engagement",
             "Construir narrativas con datos para stakeholders",
             "Preparar briefings ejecutivos desde datos brutos"
         ],
@@ -269,12 +344,12 @@ const LEARNING_PATH = [
             {
                 type: "concept",
                 title: "El cambio de mentalidad: de herramienta a asesor",
-                text: "La mayoría de los usuarios usan Claude para ejecutar: 'redacta esto', 'resume aquello'. El uso avanzado es para pensar: 'ayúdame a estructurar este problema', 'qué argumentos debería anticipar', 'cómo presentaría esto un consultor senior'. Cuando le pides a Claude que te ayude a pensar en lugar de a producir, obtienes perspectivas que genuinamente amplían tu análisis y no solo ahorran tiempo."
+                text: "La mayoría usa Claude para **ejecutar**: «redacta esto», «resume aquello». Útil, pero es la punta del iceberg.\n\nEl uso avanzado es para **pensar**: «ayúdame a estructurar este problema», «qué argumentos debería anticipar», «cómo lo presentaría un consultor senior».\n\nCuando le pides que te ayude a pensar en vez de a producir, obtienes perspectivas que **amplían tu análisis**, no solo ahorran tiempo."
             },
             {
                 type: "concept",
-                title: "Enmarcar decisiones de talento",
-                text: "Antes de llegar a una reunión de talento con una recomendación, puedes usar Claude para hacer un stress test de tu posición. Dale el contexto completo (la persona, el rol, los datos de performance, las restricciones) y pídele que te argumente tanto a favor como en contra de tu recomendación. Esto te prepara para las objeciones que encontrarás y fortalece tu posición antes de entrar en la sala."
+                title: "Construir propuestas de estrategia de people",
+                text: "Como HRBP no decides colocaciones ni ratings, pero sí **planteas propuestas de estrategia** para tu capability: planes de upskilling, coberturas alternativas para posiciones difíciles, o iniciativas de engagement.\n\nClaude es un gran sparring para construirlas: dale el contexto completo (datos, restricciones, objetivo) y pídele que **estructure la propuesta, la argumente a favor y en contra, y anticipe las objeciones**.\n\nAsí llegas a la conversación con el liderazgo con una propuesta sólida, no con una idea a medio cocer."
             },
             {
                 type: "tip",
@@ -283,13 +358,13 @@ const LEARNING_PATH = [
             {
                 type: "example",
                 title: "Ejemplo práctico",
-                prompt: "Tengo una reunión con el MD de mi capability mañana. Necesito prepararle un briefing ejecutivo sobre la situación del talento. Aquí están los datos brutos que tengo:\n\n<datos_workforce>\n- Headcount actual: 380 profesionales\n- Attrition últimos 6 meses: 8.2% (benchmark firma: 6%)\n- Nivel más afectado: Consultants (12% attrition)\n- Proyectos con riesgo de staffing: 3 (dos cuentas top, una cuenta nueva estratégica)\n- Pipeline de hiring: 15 offers aceptadas para los próximos 2 meses\n- Engagement score último pulso: 67/100 (bajó 8 puntos vs. Q1)\n- Principales temas en comentarios abiertos del pulso: carga de trabajo, visibilidad de carrera, trabajo remoto\n</datos_workforce>\n\nActúa como un Chief People Officer experimentado. Ayúdame a:\n1. Identificar las 2-3 prioridades que el MD necesita conocer urgentemente\n2. Construir la narrativa que conecte attrition + engagement + riesgo de proyectos\n3. Proponer 3 acciones concretas que pueda recomendar con impacto en 90 días\n4. Anticipar las 3 preguntas difíciles que me hará el MD y cómo responderlas\n\nFormato: Briefing ejecutivo de máximo una página, con sección de acciones y sección de anticipación de preguntas al final.",
+                prompt: "Tengo una reunión con el MD de mi capability mañana. Necesito prepararle un briefing ejecutivo sobre la situación del talento. Aquí están los datos brutos que tengo:\n\n<datos_workforce>\n- Headcount actual: 380 profesionales\n- Attrition últimos 6 meses: 8.2% (benchmark firma: 6%)\n- Nivel más afectado: Consultants (12% attrition)\n- Proyectos con riesgo de staffing: 3 (dos cuentas top, una cuenta nueva estratégica)\n- Pipeline de hiring: 15 offers aceptadas para los próximos 2 meses\n- Engagement score último pulso: 67/100 (bajó 8 puntos vs. Q1)\n- Principales temas en comentarios abiertos del pulso: carga de trabajo, visibilidad de carrera, trabajo remoto\n</datos_workforce>\n\nActúa como un Chief People Officer experimentado. Ayúdame a:\n1. Identificar las 2-3 prioridades que el MD necesita conocer urgentemente\n2. Construir la narrativa que conecte attrition + engagement + riesgo de proyectos\n3. Proponer 3 acciones concretas que pueda plantear con impacto en 90 días\n4. Anticipar las 3 preguntas difíciles que me hará el MD y cómo responderlas\n\nFormato: Briefing ejecutivo de máximo una página, con sección de acciones y sección de anticipación de preguntas al final.",
                 explanation: "Este prompt convierte datos brutos en un briefing ejecutivo estructurado, pidiendo a Claude que actúe como CPO para elevar la calidad del análisis y que anticipe las preguntas del MD para preparar al HRBP para la reunión."
             },
             {
                 type: "exercise",
                 title: "Prepara tu próxima reunión con Claude",
-                instructions: "1. Identifica una reunión importante que tengas en los próximos 7 días (con el MD, con un People Lead, con un cliente interno). 2. Escribe en un documento todos los datos relevantes que tienes: métricas, situaciones, contexto. 3. Pégaselo a Claude y pídele que actúe como tu preparador de reuniones: que identifique qué puntos deberías enfatizar, qué objeciones anticipar y cómo estructurar tu mensaje principal. 4. Anota las ideas de Claude que no habías considerado. 5. Después de la reunión, reflexiona sobre qué predicciones de Claude fueron acertadas."
+                instructions: "1. Identifica una reunión importante que tengas en los próximos 7 días (con el MD, con un People Lead, con un stakeholder de otro departamento de Accenture). 2. Escribe en un documento todos los datos relevantes que tienes: métricas, situaciones, contexto. 3. Pégaselo a Claude y pídele que actúe como tu preparador de reuniones: que identifique qué puntos deberías enfatizar, qué objeciones anticipar y cómo estructurar tu mensaje principal. 4. Anota las ideas de Claude que no habías considerado. 5. Después de la reunión, reflexiona sobre qué predicciones de Claude fueron acertadas."
             }
         ],
         resources: [
@@ -304,7 +379,7 @@ const LEARNING_PATH = [
         relatedPrompts: ["hr1", "hr2", "hr3", "hr4", "hr5", "hr6", "hr7"]
     },
     {
-        id: 6,
+        id: 7,
         icon: "&#127775;",
         title: "Talent, engagement y people analytics",
         subtitle: "Talent reviews, análisis de engagement y planes de retención con soporte de IA",
@@ -312,21 +387,26 @@ const LEARNING_PATH = [
         difficulty: "intermedio",
         intro: "El corazón del trabajo de un HRBP en una capability de Software & Platform Engineering es gestionar el talento con precisión: saber quién está listo para el siguiente nivel, quién está en riesgo de salida, qué dice el engagement survey debajo de la superficie. Claude puede ser tu copiloto en estas tres dimensiones, ayudándote a interpretar datos complejos y a construir planes de acción que sean más que respuestas genéricas.",
         topics: [
-            "Usar Claude en análisis de 9-box y talent reviews",
+            "Sintetizar inputs de varias fuentes para el talent review",
+            "Analizar comentarios de performance y entrevistas de salida",
             "Interpretar datos de engagement más allá de los promedios",
-            "Construir planes de acción desde datos de engagement",
-            "Análisis de patrones de attrition y retención"
+            "Construir planes de acción desde datos de engagement"
         ],
         content: [
             {
                 type: "concept",
-                title: "Claude en el proceso de talent review",
-                text: "Durante una talent review, manejas información de múltiples fuentes: performance ratings, feedback de People Leads, datos de movilidad, aspiraciones declaradas. Claude puede ayudarte a sintetizar esta información para cada perfil en una evaluación equilibrada, identificar sesgos en los datos que te presentan y construir argumentos sólidos para tus recomendaciones de colocación en el 9-box. Recuerda anonimizar siempre los datos antes de pegarlos."
+                title: "Claude para sintetizar inputs en el talent review",
+                text: "En el talent review no partes de cero: los feedbacks ya están recogidos. En la sesión con el Talent Lead se cruzan varias fuentes — **input de cliente, input del People Lead o mentor, y los KPIs de people de HR**.\n\nEl valor de Claude **no es decidir ni colocar a nadie en una matriz**. Es sintetizar toda esa información dispersa en una visión equilibrada por persona, señalar dónde las fuentes se contradicen (cliente muy satisfecho pero People Lead preocupado) y prepararte las preguntas para la sesión.\n\nLa decisión sigue siendo del comité; Claude te ayuda a **llegar preparado/a**. Recuerda anonimizar siempre antes de pegar."
+            },
+            {
+                type: "concept",
+                title: "Analizar comentarios: performance y entrevistas de salida",
+                text: "Donde Claude brilla de verdad es **leyendo texto libre a escala**.\n\nPégale (anonimizados) los comentarios de las revisiones de performance y pídele que identifique temas recurrentes, fortalezas comunes y señales de alerta que se repiten entre managers distintos.\n\nLo mismo con las **entrevistas de salida**: en vez de leer 20 una a una, Claude las agrupa por motivo real de salida, detecta patrones (¿se van por carrera, por carga, por compensación?) y los conecta con el segmento o capability afectada.\n\nEs análisis cualitativo que antes te llevaba horas — siempre como input para tu criterio, **nunca como conclusión automática**."
             },
             {
                 type: "concept",
                 title: "Del engagement score al plan de acción",
-                text: "El error más común en el análisis de engagement es quedarse en los promedios. Un score de 72/100 puede esconder un 90 en un grupo y un 55 en otro. Claude es especialmente bueno para analizar los comentarios abiertos de surveys de engagement: puede identificar temas emergentes, agrupar frustraciones similares expresadas de forma diferente y conectar patrones entre el score cuantitativo y los comentarios cualitativos. El resultado: un análisis más rico que el informe estándar de la herramienta."
+                text: "El error más común al analizar engagement es **quedarse en los promedios**. Un score de 72/100 puede esconder un 90 en un grupo y un 55 en otro.\n\nClaude es muy bueno con los **comentarios abiertos**: identifica temas emergentes, agrupa frustraciones parecidas expresadas de forma distinta y conecta el dato cuantitativo con el cualitativo.\n\nEl resultado: un análisis más rico que el informe estándar de la herramienta."
             },
             {
                 type: "tip",
@@ -356,7 +436,7 @@ const LEARNING_PATH = [
         relatedPrompts: ["tr1", "tr2", "tr3", "er1", "er2", "er3", "pa1", "pa2"]
     },
     {
-        id: 7,
+        id: 8,
         icon: "&#128187;",
         title: "Claude Code: automatización real para HRBP",
         subtitle: "Del chat a la terminal: cómo Claude Code ejecuta tareas reales con tus archivos",
@@ -373,28 +453,33 @@ const LEARNING_PATH = [
         content: [
             {
                 type: "concept",
+                title: "Primero: ¿qué es la terminal? (y por qué no da miedo)",
+                text: "Si nunca has usado una terminal, tranquilidad: es solo una ventana donde **escribes órdenes en texto** en lugar de hacer clic con el ratón. En Windows se llama **PowerShell**.\n\nPara abrirla: pulsa la tecla Windows, escribe «PowerShell» y ábrela. Verás una línea esperando tus órdenes. El único comando que necesitas para empezar es **cd** (de «change directory»), que sirve para entrar en una carpeta — por ejemplo, **cd Documentos\\Proyecto**.\n\nClaude Code vive justo ahí: te colocas en la carpeta de tu proyecto, escribes **claude** y, a partir de ese momento, le hablas en lenguaje natural igual que en el chat. La terminal es solo la puerta de entrada; no tienes que aprender comandos raros."
+            },
+            {
+                type: "concept",
                 title: "Claude web vs Claude Code: la diferencia clave",
-                text: "Claude web es para pensar juntos — intercambias ideas, texto, documentos en un chat. Claude Code es para ejecutar — le dices 'lee esta carpeta, genera este informe, guárdalo aquí' y lo hace. La misma inteligencia, capacidad de acción muy distinta. Claude Code trabaja directamente en tu sistema de archivos (local, OneDrive o SharePoint sincronizado), navega por tus carpetas, crea y edita archivos reales. Para un HRBP, esto significa automatizar tareas como: consolidar datos de headcount de múltiples Excel, generar comunicados personalizados por equipo, o crear presentaciones HTML directamente desde datos."
+                text: "La misma inteligencia, dos formas de trabajar.\n\n**Claude web es para pensar juntos:** intercambias ideas, texto y documentos en un chat. **Claude Code es para ejecutar:** le dices «lee esta carpeta, genera este informe, guárdalo aquí» y lo hace, trabajando directamente sobre tus archivos (local, OneDrive o SharePoint sincronizado).\n\nPara un HRBP eso es automatizar tareas como consolidar headcount de varios Excel, generar comunicados por equipo o crear presentaciones HTML desde datos.\n\nToca cada una para ver la diferencia 👇"
             },
             {
                 type: "concept",
                 title: "Asistentes vs Agentes: saber qué pedirle a Claude",
-                text: "No toda IA trabaja igual. Un asistente genera output que tú aplicas (copias, pegas, ajustas). Un agente recibe un objetivo, planifica los pasos, lee y escribe archivos reales, ejecuta código e itera hasta completar la tarea — tú supervisas. Claude web funciona como asistente. Claude Code funciona como agente. Usa asistentes cuando quieras explorar ideas, generar borradores o tareas puntuales de un solo paso. Usa agentes cuando la tarea implica varios pasos encadenados, necesita leer y guardar archivos, o quieres automatizar algo recurrente."
+                text: "No toda IA trabaja igual, y entender esto te ayuda a saber qué pedir.\n\n**Claude web funciona como asistente; Claude Code, como agente.** Usa el asistente para explorar ideas, generar borradores o tareas de un solo paso. Usa el agente cuando la tarea tiene varios pasos encadenados, necesita leer y guardar archivos, o quieres automatizar algo recurrente.\n\nToca cada uno para ver cómo trabaja 👇"
             },
             {
                 type: "concept",
                 title: "CLAUDE.md: el contexto que Claude recuerda siempre",
-                text: "Por defecto, cada sesión de Claude empieza de cero. Pero con un archivo CLAUDE.md en tu carpeta de proyecto, Claude lo lee automáticamente al arrancar y sabe quién eres, en qué proyecto estás y cómo trabajas. Hay dos tipos: tu CLAUDE.md personal (con tu rol, proyectos activos, forma de trabajar) y el CLAUDE.md del proyecto (con el cliente, fase, idioma, plantillas, restricciones). Al cerrar cada sesión, pide a Claude que actualice el CLAUDE.md con lo aprendido — con el tiempo se vuelve más rico y cada sesión arranca con el estado real."
+                text: "Por defecto, cada sesión de Claude **empieza de cero**. El archivo **CLAUDE.md** soluciona eso: Claude lo lee automáticamente al arrancar y ya sabe quién eres, en qué proyecto estás y cómo trabajas.\n\nHay dos tipos: tu **CLAUDE.md personal** (tu rol, proyectos activos, forma de trabajar) y el **del proyecto** (fase, idioma, plantillas, restricciones).\n\nTruco: al cerrar cada sesión, pide a Claude que actualice el CLAUDE.md con lo aprendido. Con el tiempo se vuelve más rico y cada sesión arranca con el estado real."
             },
             {
                 type: "concept",
                 title: "Skills: macros inteligentes que se invocan con un comando",
-                text: "Una skill es un comando especial de Claude Code que se activa escribiendo /nombre-skill. En lugar de explicar paso a paso qué hacer, la skill ya lleva incorporadas las instrucciones, el contexto y el flujo de trabajo. Imagina que en lugar de escribir un prompt de 200 palabras cada vez que necesitas una presentación, simplemente escribes /ppt 'Análisis de attrition Q3 — 6 diapositivas'. Las skills de Accenture son las distribuidas a nivel corporativo por la +IA o las configuradas por cada persona. No se descargan de internet."
+                text: "Una **skill** es un comando (se escribe /nombre) que ya lleva incorporadas las instrucciones, el contexto y el flujo de trabajo. En vez de escribir un prompt de 200 palabras, escribes **/ppt 'Análisis de attrition Q3 — 6 diapositivas'** y listo.\n\nPara un HRBP, algunas skills útiles serían:\n\n- **/briefing** — el briefing mensual del MD desde un export de Workday\n- **/engagement** — convertir los resultados de un pulso en un plan de acción\n- **/1to1** — preparar el guion de una conversación de desarrollo\n- **/exit-analysis** — resumir patrones de varias entrevistas de salida\n- **/comunicado** — redactar y maquetar un comunicado interno\n\nLas skills de Accenture son las que distribuye la +IA o las que configura cada persona. **No se descargan de internet.**"
             },
             {
                 type: "concept",
                 title: "Limitaciones: lo que Claude no puede hacer",
-                text: "Claude no tiene acceso a internet en tiempo real — su conocimiento tiene fecha de corte. No se conecta directamente a SharePoint, SAP o Teams (trabaja con archivos locales que tú le facilitas). Puede alucinar: cifras, fechas y referencias pueden sonar plausibles pero ser incorrectas — siempre verifica. En conversaciones muy largas pierde contexto anterior. Y recuerda: Claude no decide, propone. La validación y decisión final son siempre tuya."
+                text: "Claude es potente, pero conviene conocer sus límites:\n\n- **No navega por internet en tiempo real** — su conocimiento tiene fecha de corte\n- **No se conecta solo a SharePoint, Workday o Teams** — trabaja con los archivos que tú le facilitas\n- **Puede alucinar**: cifras, fechas y referencias pueden sonar plausibles y ser falsas — verifica siempre\n- En conversaciones muy largas **pierde contexto** anterior\n\nY lo más importante: **Claude no decide, propone**. La validación y la decisión final son siempre tuyas."
             },
             {
                 type: "tip",
@@ -431,7 +516,7 @@ const LEARNING_PATH = [
         relatedPrompts: ["cc18", "cc22", "pr4"]
     },
     {
-        id: 8,
+        id: 9,
         icon: "&#128274;",
         title: "Uso responsable y seguridad en Accenture",
         subtitle: "Qué puedes compartir con Claude, cómo anonimizar datos y las reglas del juego en la firma",
@@ -442,29 +527,23 @@ const LEARNING_PATH = [
             "Qué datos puedes y no puedes compartir con Claude",
             "Cómo anonimizar datos de personas antes de usar IA",
             "Qué hacer cuando el contrato del cliente prohíbe usar IA",
-            "Verificación antes de enviar: el checklist del HRBP",
-            "Glosario de términos clave de IA y Claude"
+            "Verificación antes de enviar: el checklist del HRBP"
         ],
         content: [
             {
                 type: "concept",
                 title: "Las tres zonas: nunca, con precaución, siempre",
-                text: "NUNCA compartas con Claude: datos personales identificables (DNI, email personal, fecha de nacimiento, historial médico), contratos con cláusulas de confidencialidad, contraseñas o credenciales, información clasificada como Restricted. CON PRECAUCIÓN: datos de proyecto de cliente (confirma primero con el CAL — algunos contratos prohíben el uso de IA), no mezcles datos de clientes distintos en la misma conversación, contenido de terceros (riesgos de propiedad intelectual). SIEMPRE: etiqueta el output con el nivel de confidencialidad más alto de los datos que usaste, revisa el output antes de compartir (alucinaciones, sesgos, imprecisiones), para asesoramiento legal o de RRHH contacta siempre con Legal."
+                text: "Una regla mental sencilla, en tres colores:\n\n**🔴 Nunca:** datos personales identificables (DNI, email personal, historial médico), contratos con cláusulas de confidencialidad, contraseñas o credenciales, información clasificada como Restricted.\n\n**🟡 Con precaución:** datos de proyecto de cliente (confirma antes con el CAL — algunos contratos prohíben la IA), no mezcles datos de clientes distintos en una misma conversación, contenido de terceros.\n\n**🟢 Siempre:** etiqueta el output con el nivel de confidencialidad más alto que hayas usado, revísalo antes de compartir (alucinaciones, sesgos) y, para temas legales o sensibles, contacta con Legal."
             },
             {
                 type: "concept",
                 title: "Anonimización: trabaja con datos sin exponer personas",
-                text: "Como HRBP trabajas constantemente con datos de personas. La regla es simple: anonimiza antes de pegar. En lugar de 'María García, Senior Consultant, 3 años en la firma, performance rating 3' usa 'Persona_01, SC, 3 años, rating 3'. Los patrones y conclusiones del análisis son igual de válidos con datos anonimizados. Claude no necesita saber quién es la persona para analizar su perfil de talento o riesgo de salida. Usa IDs, iniciales o categorías genéricas."
+                text: "Como HRBP trabajas constantemente con datos de personas. La regla es simple: **anonimiza antes de pegar**.\n\nEn vez de «María García, Senior Consultant, 3 años, rating 3», escribe «**Persona_01, SC, 3 años, rating 3**».\n\nLos patrones y las conclusiones son igual de válidos: Claude no necesita saber quién es la persona para analizar su perfil de talento o su riesgo de salida. Usa IDs, iniciales o categorías genéricas."
             },
             {
                 type: "concept",
                 title: "Contratos de cliente que prohíben IA",
-                text: "Algunos contratos con administraciones públicas o clientes con altos requisitos de seguridad prohíben el uso de IA para procesar sus datos. Esto no significa que no puedas usar Claude — significa que debes separar lo que haces con y sin datos del cliente. Puedes usar Claude para: preparar plantillas vacías, redactar con datos ficticios, generar marcos de análisis y metodologías, revisar documentos internos de Accenture. No puedes usar Claude para: procesar documentos reales del cliente, analizar datos de usuarios del sistema, generar output que incorpore datos del entorno cliente."
-            },
-            {
-                type: "concept",
-                title: "Glosario esencial para el HRBP",
-                text: "Prompt: el mensaje o instrucción que le escribes a Claude. Token: unidad mínima de texto (1 token ≈ 4 caracteres ≈ 0,75 palabras; Claude maneja hasta 200K tokens). Contexto/Ventana de contexto: todo lo que Claude 've' en una sesión (historial + archivos + CLAUDE.md); al cerrar se borra. Alucinación: cuando Claude genera información incorrecta con aparente confianza — siempre verifica. CLAUDE.md: archivo de instrucciones permanentes que Claude lee al arrancar. Modelo: la versión de Claude (Opus = potente, Sonnet = equilibrado, Haiku = rápido). MCP: protocolo para conectar Claude con herramientas externas. SSO: autenticación única con credenciales corporativas @accenture.com."
+                text: "Algunos contratos (administraciones públicas, clientes con altos requisitos de seguridad) **prohíben usar IA** para procesar sus datos. No significa que no puedas usar Claude: significa **separar lo que haces con y sin datos del cliente**.\n\n**Sí puedes:** preparar plantillas vacías, redactar con datos ficticios, generar marcos de análisis y metodologías, revisar documentos internos de Accenture.\n\n**No puedes:** procesar documentos reales del cliente, analizar datos de usuarios del sistema, o generar output que incorpore datos del entorno cliente."
             },
             {
                 type: "tip",
@@ -473,7 +552,7 @@ const LEARNING_PATH = [
             {
                 type: "example",
                 title: "Ejemplo: anonimizar datos de talent review",
-                prompt: "Voy a darte datos de un talent review anonimizados. Necesito que los analices.\n\n<datos_talent>\nPersona_01: SC, 4 años, rating 4, alta en 9-box (alto potencial/alto rendimiento), expresó interés en management track\nPersona_02: C, 2 años, rating 3, media en 9-box, sin desarrollo visible en 6 meses\nPersona_03: SM, 8 años, rating 5, alta en 9-box, riesgo de salida medio (benchmark salarial por debajo)\nPersona_04: A, 1 año, rating 3, baja en 9-box, feedback mixto de People Lead\nPersona_05: SC, 5 años, rating 2, media-baja en 9-box, señales de burnout\n</datos_talent>\n\nPara cada persona:\n1. Evaluación de riesgo (retención, desarrollo, performance)\n2. Acción recomendada prioritaria\n3. Conversación que debería tener el HRBP con esta persona o su People Lead\n\nFormato: tabla con columnas ID, Riesgo principal, Acción, Conversación clave.",
+                prompt: "Voy a darte datos de un talent review anonimizados. Necesito que los analices.\n\n<datos_talent>\nPersona_01: SC, 4 años, rating 4, alta en 9-box (alto potencial/alto rendimiento), expresó interés en management track\nPersona_02: C, 2 años, rating 3, media en 9-box, sin desarrollo visible en 6 meses\nPersona_03: SM, 8 años, rating 5, alta en 9-box, riesgo de salida medio (benchmark salarial por debajo)\nPersona_04: A, 1 año, rating 3, baja en 9-box, feedback mixto de People Lead\nPersona_05: SC, 5 años, rating 2, media-baja en 9-box, señales de burnout\n</datos_talent>\n\nPara cada persona:\n1. Evaluación de riesgo (retención, desarrollo, performance) a partir de los inputs dados\n2. Acción a proponer o validar con el People Lead\n3. Conversación que debería tener el HRBP con esta persona o su People Lead\n\nFormato: tabla con columnas ID, Riesgo principal, Acción a validar, Conversación clave.",
                 explanation: "Este ejemplo muestra cómo trabajar con datos de personas sin exponer identidades. Los códigos (Persona_01, SC, A) mantienen el análisis útil sin comprometer la privacidad. Claude puede identificar patrones y recomendar acciones igual de bien con datos anonimizados."
             },
             {
@@ -501,7 +580,7 @@ const LEARNING_PATH = [
         relatedPrompts: ["tr1", "tr2", "pa1"]
     },
     {
-        id: 9,
+        id: 10,
         icon: "&#9889;",
         title: "Flujos de trabajo avanzados",
         subtitle: "Prompt chaining, Proyectos, plantillas reutilizables y flujos visuales antes de ejecutar",
@@ -518,22 +597,27 @@ const LEARNING_PATH = [
             {
                 type: "concept",
                 title: "Prompt chaining: el HRBP como director de orquesta",
-                text: "El prompt chaining consiste en diseñar una secuencia de prompts donde la salida de cada uno se convierte en la entrada del siguiente. Para un HRBP, un ejemplo típico es: Paso 1 (análisis), Paso 2 (estrategia) y Paso 3 (comunicación). Este enfoque produce resultados de mayor calidad porque cada paso puede ser optimizado por separado, y permite revisar y corregir entre etapas antes de continuar."
+                text: "El **prompt chaining** es encadenar prompts: la salida de uno es la entrada del siguiente.\n\nUn ejemplo típico de HRBP: **Paso 1 análisis → Paso 2 estrategia → Paso 3 comunicación**.\n\nDa resultados de más calidad porque optimizas cada paso por separado y puedes **revisar y corregir entre etapas** antes de seguir."
             },
             {
                 type: "concept",
                 title: "Claude Projects: tu espacio de trabajo persistente",
-                text: "La funcionalidad de Proyectos en Claude te permite crear un espacio con contexto persistente: puedes subir documentos (políticas de RRHH, guías de carrera, organigramas), definir instrucciones permanentes sobre cómo quieres que Claude te responda, y mantener conversaciones relacionadas organizadas. Para un HRBP, esto significa que puedes crear un Proyecto para tu capability donde Claude ya sabe quién eres, qué capability llevas y cuáles son tus principales documentos de referencia, sin tener que repetirlo en cada sesión."
+                text: "Los **Proyectos** de Claude son espacios con contexto persistente. Subes documentos (políticas de RRHH, guías de carrera, organigramas), defines instrucciones permanentes y mantienes organizadas las conversaciones relacionadas.\n\nPara un HRBP: creas un Proyecto para tu capability donde Claude **ya sabe quién eres, qué capability llevas y cuáles son tus documentos de referencia** — sin repetirlo en cada sesión."
+            },
+            {
+                type: "concept",
+                title: "Escribir buenas instrucciones de Proyecto",
+                text: "Las **instrucciones de un Proyecto** son las reglas permanentes que Claude sigue en cada conversación dentro de él. Cuanto mejores sean, menos tendrás que corregir después.\n\nUnas buenas instrucciones suelen incluir:\n\n- **Quién eres** y tu contexto (tu ficha de HRBP)\n- **Cómo quieres el output** por defecto — tono, longitud, formato\n- **Reglas fijas** — anonimizar siempre, marcar lo que falte como [DATO REQUERIDO], no decidir sobre personas\n- **Vocabulario y referencias** — nombres de niveles, capabilities y plantillas que usas\n\nRevísalas cada pocas semanas: a medida que descubres lo que funciona, las afinas y el Proyecto se vuelve más tuyo."
             },
             {
                 type: "concept",
                 title: "Flujos visuales: dibuja antes de ejecutar",
-                text: "El error más común al automatizar con Claude es pedirle que ejecute antes de haber definido la lógica. Antes de que Claude toque ningún archivo, pídele que genere un diagrama del flujo: pasos, decisiones, puntos de control y salidas. Puedes pedirle un diagrama en texto o incluso un HTML interactivo con el flujo visual. Revísalo, corrígelo en lenguaje natural si no refleja lo que quieres, y solo entonces dale luz verde. Cambiar un diagrama es instantáneo; deshacer código ejecutado no siempre lo es."
+                text: "El error más común al automatizar es pedirle a Claude que **ejecute antes de definir la lógica**.\n\nAntes de que toque ningún archivo, pídele que dibuje el flujo: pasos, decisiones, puntos de control y salidas (en texto o como HTML interactivo). Revísalo, corrígelo en lenguaje natural y **solo entonces dale luz verde**.\n\nCambiar un diagrama es instantáneo; deshacer código ya ejecutado, no siempre."
             },
             {
                 type: "concept",
                 title: "Cierre de sesión: consolida lo aprendido",
-                text: "Al final de cada sesión productiva, usa este prompt de cierre: 'Antes de terminar: ¿qué has aprendido en esta sesión que debería quedar guardado? Incluye contexto del proyecto, decisiones tomadas y cualquier preferencia mía que hayas detectado. Dame el texto listo para copiar al CLAUDE.md.' Con el tiempo, tanto tu CLAUDE.md personal como el del proyecto se vuelven más ricos — y Claude arranca cada sesión con el estado real del proyecto, no desde cero."
+                text: "Al final de cada sesión productiva, usa un **prompt de cierre**:\n\n«Antes de terminar: ¿qué hemos aprendido en esta sesión que debería quedar guardado? Incluye contexto del proyecto, decisiones tomadas y preferencias mías que hayas detectado. Dame el texto listo para copiar al CLAUDE.md.»\n\nCon el tiempo, tu CLAUDE.md se vuelve más rico y **cada sesión arranca con el estado real del proyecto, no desde cero**."
             },
             {
                 type: "tip",
@@ -570,7 +654,7 @@ const LEARNING_PATH = [
         relatedPrompts: ["cc18", "cc13", "cc22", "pr4"]
     },
     {
-        id: 10,
+        id: 11,
         icon: "&#128197;",
         title: "Tu semana con Claude como HRBP",
         subtitle: "Rutinas semanales, plantillas para tareas recurrentes y cuándo NO usar IA",
@@ -587,17 +671,17 @@ const LEARNING_PATH = [
             {
                 type: "concept",
                 title: "La rutina semanal del HRBP con Claude",
-                text: "Una rutina efectiva tiene tres momentos clave: el lunes (orientación estratégica), el miércoles (revisión de progreso) y el viernes (cierre y comunicación). El lunes usas Claude para revisar tus prioridades de la semana en función de los datos más recientes, anticipar conversaciones difíciles y preparar la agenda de reuniones. El miércoles haces un check rápido de las iniciativas activas: ¿hay señales de alerta en los datos de esta semana? El viernes produces el weekly report y planificas los follow-ups. Esta estructura convierte Claude de herramienta puntual a compañero habitual."
+                text: "Una rutina efectiva tiene tres momentos:\n\n- **Lunes — orientación:** revisa prioridades con los datos más recientes, anticipa conversaciones difíciles y prepara la agenda\n- **Miércoles — progreso:** check rápido de iniciativas activas, ¿hay señales de alerta esta semana?\n- **Viernes — cierre:** produce el weekly report y planifica los follow-ups\n\nEsta estructura convierte Claude de herramienta puntual en **compañero habitual**."
             },
             {
                 type: "concept",
                 title: "Cuándo NO usar Claude",
-                text: "Claude es potente, pero no es adecuado para todo. No uses Claude cuando la confidencialidad sea crítica y no tengas certeza de las políticas de privacidad de tu organización. No uses Claude para sustituir conversaciones humanas reales: una conversación difícil con un Senior Manager sobre su performance necesita tu presencia y tu empatía, no una respuesta generada por IA. No delegues en Claude decisiones que requieren tu juicio contextual sobre personas concretas. Y no uses Claude cuando el tiempo de briefing a la IA es mayor que el tiempo de hacer la tarea directamente: para un email de dos líneas, escríbelo tú."
+                text: "Claude es potente, pero no para todo. **No lo uses cuando:**\n\n- La **confidencialidad es crítica** y no tienes certeza de las políticas de privacidad\n- Sustituiría una **conversación humana real** (una conversación difícil sobre performance necesita tu presencia y empatía, no una IA)\n- La decisión requiere tu **juicio contextual** sobre personas concretas\n- El **briefing a la IA lleva más** que hacer la tarea: para un email de dos líneas, escríbelo tú\n\nSaber cuándo no usarlo es parte de usarlo bien."
             },
             {
                 type: "concept",
                 title: "Comandos de referencia rápida",
-                text: "Comandos de arranque en PowerShell: 'claude' (lanza Claude Code en la carpeta actual), 'claude -c' o 'claude --continue' (retoma la última sesión con todo el contexto), 'claude \"prompt\"' (modo one-shot, ejecuta y devuelve sin modo interactivo). Slash commands dentro de Claude Code: /clear (limpia contexto de la sesión — úsalo al cambiar de tema), /init (genera CLAUDE.md del proyecto leyendo archivos), /memory (gestiona memoria persistente entre sesiones), /model (cambia entre Opus, Sonnet y Haiku), /cost (muestra coste acumulado de la sesión), /undo (revierte el último cambio). Tecla Escape para interrumpir en cualquier momento."
+                text: "Una chuleta para tener a mano (abajo los tienes en formato terminal):\n\n**Arranque en PowerShell:** **claude** lanza Claude Code en la carpeta actual; **claude -c** retoma la última sesión con su contexto; **claude \"prompt\"** ejecuta en modo one-shot.\n\n**Dentro de Claude Code:** **/clear** limpia el contexto (al cambiar de tema), **/init** genera el CLAUDE.md, **/model** cambia de modelo, **/cost** muestra el coste de la sesión, **/undo** revierte el último cambio. La tecla **Escape** interrumpe en cualquier momento."
             },
             {
                 type: "tip",
