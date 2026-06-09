@@ -25,6 +25,21 @@ const LEARNING_PATH = [
                 text: "Mientras que otras herramientas priorizan la velocidad o la creatividad sin filtros, Claude está diseñado para ser preciso, honesto y útil en contextos profesionales. Anthropic construyó Claude con principios de seguridad y utilidad que lo hacen especialmente adecuado para tareas sensibles de RRHH: analizar datos de personas, redactar comunicaciones internas o preparar briefings para stakeholders. Claude reconoce cuando no sabe algo y lo dice, en lugar de inventar respuestas."
             },
             {
+                type: "concept",
+                title: "Claude vs ChatGPT vs Claude Code: elige la herramienta correcta",
+                text: "En Accenture conviven tres herramientas de IA principales. ChatGPT (OpenAI) es un asistente generalista con 128K tokens y buenas integraciones visuales (DALL·E). Claude (web/app) es un asistente conversacional con 200K tokens de contexto, superior en razonamiento, documentos largos y redacción institucional en español — ideal para el HRBP que necesita analizar y generar documentos. Claude Code (CLI) es un agente en tu terminal que lee y escribe archivos reales, ejecuta scripts y automatiza procesos completos — sin equivalente en el mercado. La regla práctica: usa Claude web para pensar y producir documentos, y Claude Code cuando necesites actuar sobre archivos reales de tu máquina."
+            },
+            {
+                type: "concept",
+                title: "Los tres modelos: Opus, Sonnet y Haiku",
+                text: "Claude tiene tres variantes. Opus es el más potente, ideal para razonamiento complejo y tareas que requieren profundidad analítica — úsalo cuando arranques un análisis de cero o necesites un plan estratégico elaborado. Sonnet es el equilibrio entre rendimiento y velocidad, perfecto para el trabajo diario del HRBP: redacción, análisis de datos, preparación de briefings. Haiku es el más rápido y ligero, bueno para tareas simples y puntuales como reformular un párrafo o clasificar información. En la interfaz de Claude puedes cambiar de modelo en cualquier momento con /model."
+            },
+            {
+                type: "concept",
+                title: "Activación de Claude Enterprise en Accenture",
+                text: "Accenture tiene un acuerdo Enterprise con Anthropic. El acceso es mediante SSO corporativo — no necesitas crear una cuenta personal. El proceso tiene dos fases: primero, revisar las Responsible AI Use Guidelines, firmar el Responsible AI Agreement y solicitar licencia en el Software Catalog (necesitarás un WBS). Una vez tengas licencia, accede a claude.ai con tu email @accenture.com y haz clic en 'Continue with SSO'. Para Claude Code, selecciona la opción 'Enterprise' durante el login — si seleccionas 'Personal' no quedará vinculado a tu licencia corporativa. El soporte técnico es vía ServiceNow, categoría 'Claude Enterprise'."
+            },
+            {
                 type: "tip",
                 text: "Cuando entres a claude.ai por primera vez, tómate 5 minutos para explorar la barra lateral. Ahí encontrarás el historial de conversaciones y la opción de crear Proyectos, que son fundamentales para organizar tu trabajo como HRBP. No empieces con la tarea más crítica del día: practica con algo de bajo riesgo, como pedirle que te explique un concepto de RRHH."
             },
@@ -49,11 +64,18 @@ const LEARNING_PATH = [
                 free: true
             },
             {
-                name: "Coursera: AI Fluency Framework Foundations",
+                name: "Workday: Claude Certified Architect Foundations",
+                url: "https://wd103.myworkday.com/accenture/d/inst/15$378651/17816$38282.htmld",
+                type: "curso",
+                desc: "Certificación oficial de Anthropic Academy disponible en Workday Learning de Accenture",
+                free: true
+            },
+            {
+                name: "Workday: AI Fluency Framework & Foundations",
                 url: "https://www.coursera.org/learn/ai-fluency-framework-foundations",
                 type: "curso",
-                desc: "Fundamentos de fluencia en IA para profesionales de negocio",
-                free: false
+                desc: "Fundamentos de IA generativa y marco de aplicación práctica — también disponible en Workday",
+                free: true
             }
         ],
         relatedPrompts: []
@@ -335,9 +357,154 @@ const LEARNING_PATH = [
     },
     {
         id: 7,
+        icon: "&#128187;",
+        title: "Claude Code: automatización real para HRBP",
+        subtitle: "Del chat a la terminal: cómo Claude Code ejecuta tareas reales con tus archivos",
+        duration: "30 min",
+        difficulty: "intermedio",
+        intro: "Claude Code es una herramienta de línea de comandos que pone Claude dentro de tu terminal. No es chatear: es delegar trabajo real a una IA que lee y escribe tus archivos, ejecuta scripts y automatiza procesos completos. Para un HRBP, esto significa que puedes pedirle que lea todos los Excel de una carpeta, genere un informe consolidado y lo guarde listo para enviar — sin copiar y pegar nada. Este capítulo te introduce en Claude Code adaptado a tu día a día.",
+        topics: [
+            "Qué es Claude Code y en qué se diferencia de Claude web",
+            "Asistentes vs Agentes: entender el espectro de autonomía",
+            "CLAUDE.md: tu archivo de contexto permanente",
+            "Skills: macros inteligentes para tareas recurrentes",
+            "Limitaciones y comandos esenciales"
+        ],
+        content: [
+            {
+                type: "concept",
+                title: "Claude web vs Claude Code: la diferencia clave",
+                text: "Claude web es para pensar juntos — intercambias ideas, texto, documentos en un chat. Claude Code es para ejecutar — le dices 'lee esta carpeta, genera este informe, guárdalo aquí' y lo hace. La misma inteligencia, capacidad de acción muy distinta. Claude Code trabaja directamente en tu sistema de archivos (local, OneDrive o SharePoint sincronizado), navega por tus carpetas, crea y edita archivos reales. Para un HRBP, esto significa automatizar tareas como: consolidar datos de headcount de múltiples Excel, generar comunicados personalizados por equipo, o crear presentaciones HTML directamente desde datos."
+            },
+            {
+                type: "concept",
+                title: "Asistentes vs Agentes: saber qué pedirle a Claude",
+                text: "No toda IA trabaja igual. Un asistente genera output que tú aplicas (copias, pegas, ajustas). Un agente recibe un objetivo, planifica los pasos, lee y escribe archivos reales, ejecuta código e itera hasta completar la tarea — tú supervisas. Claude web funciona como asistente. Claude Code funciona como agente. Usa asistentes cuando quieras explorar ideas, generar borradores o tareas puntuales de un solo paso. Usa agentes cuando la tarea implica varios pasos encadenados, necesita leer y guardar archivos, o quieres automatizar algo recurrente."
+            },
+            {
+                type: "concept",
+                title: "CLAUDE.md: el contexto que Claude recuerda siempre",
+                text: "Por defecto, cada sesión de Claude empieza de cero. Pero con un archivo CLAUDE.md en tu carpeta de proyecto, Claude lo lee automáticamente al arrancar y sabe quién eres, en qué proyecto estás y cómo trabajas. Hay dos tipos: tu CLAUDE.md personal (con tu rol, proyectos activos, forma de trabajar) y el CLAUDE.md del proyecto (con el cliente, fase, idioma, plantillas, restricciones). Al cerrar cada sesión, pide a Claude que actualice el CLAUDE.md con lo aprendido — con el tiempo se vuelve más rico y cada sesión arranca con el estado real."
+            },
+            {
+                type: "concept",
+                title: "Skills: macros inteligentes que se invocan con un comando",
+                text: "Una skill es un comando especial de Claude Code que se activa escribiendo /nombre-skill. En lugar de explicar paso a paso qué hacer, la skill ya lleva incorporadas las instrucciones, el contexto y el flujo de trabajo. Imagina que en lugar de escribir un prompt de 200 palabras cada vez que necesitas una presentación, simplemente escribes /ppt 'Análisis de attrition Q3 — 6 diapositivas'. Las skills de Accenture son las distribuidas a nivel corporativo por la +IA o las configuradas por cada persona. No se descargan de internet."
+            },
+            {
+                type: "concept",
+                title: "Limitaciones: lo que Claude no puede hacer",
+                text: "Claude no tiene acceso a internet en tiempo real — su conocimiento tiene fecha de corte. No se conecta directamente a SharePoint, SAP o Teams (trabaja con archivos locales que tú le facilitas). Puede alucinar: cifras, fechas y referencias pueden sonar plausibles pero ser incorrectas — siempre verifica. En conversaciones muy largas pierde contexto anterior. Y recuerda: Claude no decide, propone. La validación y decisión final son siempre tuya."
+            },
+            {
+                type: "tip",
+                text: "El primer paso productivo con Claude Code es crear tu CLAUDE.md personal. Abre PowerShell, navega a tu carpeta de proyecto (cd C:\\Proyectos\\MiProyecto) y escribe 'claude'. Luego pídele: 'Crea mi CLAUDE.md personal basándote en lo que te cuente'. Descríbele tu rol, tu capability, tus proyectos y cómo trabajas. Claude lo guardará y lo leerá automáticamente en cada sesión futura."
+            },
+            {
+                type: "example",
+                title: "Ejemplo práctico: automatizar un informe de headcount",
+                prompt: "Navega a la carpeta 'Datos_Workforce' y lee todos los archivos Excel que encuentres. Para cada uno:\n1. Extrae las columnas de nombre del equipo, headcount actual, joiners y leavers\n2. Consolida todo en una tabla resumen con una fila por equipo\n3. Calcula el attrition rate por equipo\n4. Genera un HTML con diseño limpio que muestre la tabla y destaque en rojo los equipos con attrition superior al 10%\n5. Guárdalo como 'informe_headcount_consolidado.html'\n\nAntes de ejecutar, muéstrame el plan de lo que vas a hacer y espera mi confirmación.",
+                explanation: "Este prompt muestra el poder de Claude Code como agente: lee múltiples archivos, procesa datos, genera un entregable visual y lo guarda — todo en una sola instrucción. El punto de control al final es una buena práctica para mantener el control."
+            },
+            {
+                type: "exercise",
+                title: "Tu primer comando en Claude Code",
+                instructions: "1. Abre PowerShell y navega a una carpeta de proyecto: cd C:\\Users\\tu.nombre\\OneDrive\\Proyecto. 2. Escribe 'claude' para lanzar Claude Code. 3. Escríbele: 'Lee los archivos de esta carpeta y dime qué hay — nombre, tipo y un resumen breve de cada uno'. 4. Observa cómo Claude navega y lee los archivos reales de tu máquina. 5. Ahora prueba: 'Genera un CLAUDE.md para este proyecto basándote en los archivos que has leído. Incluye: nombre del proyecto, tipo de contenido, estructura de carpetas y recomendaciones de uso'. 6. Revisa el archivo generado y ajústalo con instrucciones adicionales. Comandos útiles: /clear (limpiar contexto), /undo (deshacer último cambio), Escape (interrumpir)."
+            }
+        ],
+        resources: [
+            {
+                name: "Workday: Claude Code in Action",
+                url: "https://wd103.myworkday.com/accenture/d/inst/15$378651/17816$38282.htmld",
+                type: "curso",
+                desc: "Uso práctico de Claude Code: comandos, flujos de trabajo, automatización — disponible en Workday Learning",
+                free: true
+            },
+            {
+                name: "Workday: Introduction to Model Context Protocol (MCP)",
+                url: "https://wd103.myworkday.com/accenture/d/inst/15$378651/17816$38282.htmld",
+                type: "curso",
+                desc: "Cómo conectar Claude con herramientas externas mediante MCP — nivel medio",
+                free: true
+            }
+        ],
+        relatedPrompts: ["cc18", "cc22", "pr4"]
+    },
+    {
+        id: 8,
+        icon: "&#128274;",
+        title: "Uso responsable y seguridad en Accenture",
+        subtitle: "Qué puedes compartir con Claude, cómo anonimizar datos y las reglas del juego en la firma",
+        duration: "20 min",
+        difficulty: "intermedio",
+        intro: "Claude Enterprise de Accenture no usa tus prompts para entrenar el modelo. Pero privacidad del modelo no equivale a que puedas subir cualquier dato. Este capítulo cubre las reglas esenciales de uso responsable de IA en Accenture, adaptadas al contexto del HRBP que trabaja con datos de personas, contratos de cliente y comunicaciones sensibles. Saber qué puedes y qué no puedes compartir con Claude es tan importante como saber usarlo.",
+        topics: [
+            "Qué datos puedes y no puedes compartir con Claude",
+            "Cómo anonimizar datos de personas antes de usar IA",
+            "Qué hacer cuando el contrato del cliente prohíbe usar IA",
+            "Verificación antes de enviar: el checklist del HRBP",
+            "Glosario de términos clave de IA y Claude"
+        ],
+        content: [
+            {
+                type: "concept",
+                title: "Las tres zonas: nunca, con precaución, siempre",
+                text: "NUNCA compartas con Claude: datos personales identificables (DNI, email personal, fecha de nacimiento, historial médico), contratos con cláusulas de confidencialidad, contraseñas o credenciales, información clasificada como Restricted. CON PRECAUCIÓN: datos de proyecto de cliente (confirma primero con el CAL — algunos contratos prohíben el uso de IA), no mezcles datos de clientes distintos en la misma conversación, contenido de terceros (riesgos de propiedad intelectual). SIEMPRE: etiqueta el output con el nivel de confidencialidad más alto de los datos que usaste, revisa el output antes de compartir (alucinaciones, sesgos, imprecisiones), para asesoramiento legal o de RRHH contacta siempre con Legal."
+            },
+            {
+                type: "concept",
+                title: "Anonimización: trabaja con datos sin exponer personas",
+                text: "Como HRBP trabajas constantemente con datos de personas. La regla es simple: anonimiza antes de pegar. En lugar de 'María García, Senior Consultant, 3 años en la firma, performance rating 3' usa 'Persona_01, SC, 3 años, rating 3'. Los patrones y conclusiones del análisis son igual de válidos con datos anonimizados. Claude no necesita saber quién es la persona para analizar su perfil de talento o riesgo de salida. Usa IDs, iniciales o categorías genéricas."
+            },
+            {
+                type: "concept",
+                title: "Contratos de cliente que prohíben IA",
+                text: "Algunos contratos con administraciones públicas o clientes con altos requisitos de seguridad prohíben el uso de IA para procesar sus datos. Esto no significa que no puedas usar Claude — significa que debes separar lo que haces con y sin datos del cliente. Puedes usar Claude para: preparar plantillas vacías, redactar con datos ficticios, generar marcos de análisis y metodologías, revisar documentos internos de Accenture. No puedes usar Claude para: procesar documentos reales del cliente, analizar datos de usuarios del sistema, generar output que incorpore datos del entorno cliente."
+            },
+            {
+                type: "concept",
+                title: "Glosario esencial para el HRBP",
+                text: "Prompt: el mensaje o instrucción que le escribes a Claude. Token: unidad mínima de texto (1 token ≈ 4 caracteres ≈ 0,75 palabras; Claude maneja hasta 200K tokens). Contexto/Ventana de contexto: todo lo que Claude 've' en una sesión (historial + archivos + CLAUDE.md); al cerrar se borra. Alucinación: cuando Claude genera información incorrecta con aparente confianza — siempre verifica. CLAUDE.md: archivo de instrucciones permanentes que Claude lee al arrancar. Modelo: la versión de Claude (Opus = potente, Sonnet = equilibrado, Haiku = rápido). MCP: protocolo para conectar Claude con herramientas externas. SSO: autenticación única con credenciales corporativas @accenture.com."
+            },
+            {
+                type: "tip",
+                text: "Antes de enviar cualquier entregable generado con Claude a un cliente o a tu leadership, pasa siempre este checklist mental: ¿Los datos numéricos están verificados con la fuente original? ¿Las referencias normativas o de políticas son correctas? ¿Se ha aplicado lenguaje inclusivo? ¿La terminología es coherente con la del cliente? ¿El nivel de confidencialidad está etiquetado? Si la respuesta a alguna es 'no', revísalo antes de enviar."
+            },
+            {
+                type: "example",
+                title: "Ejemplo: anonimizar datos de talent review",
+                prompt: "Voy a darte datos de un talent review anonimizados. Necesito que los analices.\n\n<datos_talent>\nPersona_01: SC, 4 años, rating 4, alta en 9-box (alto potencial/alto rendimiento), expresó interés en management track\nPersona_02: C, 2 años, rating 3, media en 9-box, sin desarrollo visible en 6 meses\nPersona_03: SM, 8 años, rating 5, alta en 9-box, riesgo de salida medio (benchmark salarial por debajo)\nPersona_04: A, 1 año, rating 3, baja en 9-box, feedback mixto de People Lead\nPersona_05: SC, 5 años, rating 2, media-baja en 9-box, señales de burnout\n</datos_talent>\n\nPara cada persona:\n1. Evaluación de riesgo (retención, desarrollo, performance)\n2. Acción recomendada prioritaria\n3. Conversación que debería tener el HRBP con esta persona o su People Lead\n\nFormato: tabla con columnas ID, Riesgo principal, Acción, Conversación clave.",
+                explanation: "Este ejemplo muestra cómo trabajar con datos de personas sin exponer identidades. Los códigos (Persona_01, SC, A) mantienen el análisis útil sin comprometer la privacidad. Claude puede identificar patrones y recomendar acciones igual de bien con datos anonimizados."
+            },
+            {
+                type: "exercise",
+                title: "Anonimiza y analiza datos reales",
+                instructions: "1. Piensa en 5 personas de tu capability que estés gestionando activamente (talent review, riesgo de salida, desarrollo, etc.). 2. Crea una tabla anonimizada con sus datos clave: nivel, antigüedad, rating, posición en 9-box, señales relevantes. Usa IDs genéricos (Persona_01, etc.) y códigos de nivel (A, SA, C, SC, M, SM). 3. Pégala en Claude con el prompt del ejemplo, adaptado a tu situación. 4. Compara las recomendaciones de Claude con las acciones que ya tenías pensadas. ¿Hay alguna perspectiva nueva? 5. Reflexiona: ¿te sentiste cómodo con el nivel de anonimización? ¿Necesitas más abstracción para tu contexto?"
+            }
+        ],
+        resources: [
+            {
+                name: "Accenture: Responsible AI Use Guidelines",
+                url: "https://in.accenture.com/responsibleai/",
+                type: "guia",
+                desc: "Directrices internas de Accenture para el uso responsable de herramientas de IA Enterprise",
+                free: true
+            },
+            {
+                name: "Claude Enterprise: Viva Engage Community",
+                url: "https://web.yammer.com/main/groups/",
+                type: "comunidad",
+                desc: "Comunidad interna de Accenture para Claude Enterprise — anuncios, aprendizaje entre pares y preguntas",
+                free: true
+            }
+        ],
+        relatedPrompts: ["tr1", "tr2", "pa1"]
+    },
+    {
+        id: 9,
         icon: "&#9889;",
         title: "Flujos de trabajo avanzados",
-        subtitle: "Prompt chaining, Proyectos de Claude y plantillas reutilizables para el HRBP moderno",
+        subtitle: "Prompt chaining, Proyectos, plantillas reutilizables y flujos visuales antes de ejecutar",
         duration: "25 min",
         difficulty: "avanzado",
         intro: "Una vez que dominas los prompts individuales, el siguiente nivel es conectarlos en flujos de trabajo completos. Un HRBP avanzado usa prompt chaining (la salida de un prompt se convierte en la entrada del siguiente), aprovecha la funcionalidad de Proyectos de Claude para mantener contexto persistente, y construye plantillas reutilizables que aceleran las tareas recurrentes. En este capítulo aprenderás a diseñar flujos de trabajo que transforman datos brutos en deliverables listos para presentar.",
@@ -357,6 +524,16 @@ const LEARNING_PATH = [
                 type: "concept",
                 title: "Claude Projects: tu espacio de trabajo persistente",
                 text: "La funcionalidad de Proyectos en Claude te permite crear un espacio con contexto persistente: puedes subir documentos (políticas de RRHH, guías de carrera, organigramas), definir instrucciones permanentes sobre cómo quieres que Claude te responda, y mantener conversaciones relacionadas organizadas. Para un HRBP, esto significa que puedes crear un Proyecto para tu capability donde Claude ya sabe quién eres, qué capability llevas y cuáles son tus principales documentos de referencia, sin tener que repetirlo en cada sesión."
+            },
+            {
+                type: "concept",
+                title: "Flujos visuales: dibuja antes de ejecutar",
+                text: "El error más común al automatizar con Claude es pedirle que ejecute antes de haber definido la lógica. Antes de que Claude toque ningún archivo, pídele que genere un diagrama del flujo: pasos, decisiones, puntos de control y salidas. Puedes pedirle un diagrama en texto o incluso un HTML interactivo con el flujo visual. Revísalo, corrígelo en lenguaje natural si no refleja lo que quieres, y solo entonces dale luz verde. Cambiar un diagrama es instantáneo; deshacer código ejecutado no siempre lo es."
+            },
+            {
+                type: "concept",
+                title: "Cierre de sesión: consolida lo aprendido",
+                text: "Al final de cada sesión productiva, usa este prompt de cierre: 'Antes de terminar: ¿qué has aprendido en esta sesión que debería quedar guardado? Incluye contexto del proyecto, decisiones tomadas y cualquier preferencia mía que hayas detectado. Dame el texto listo para copiar al CLAUDE.md.' Con el tiempo, tanto tu CLAUDE.md personal como el del proyecto se vuelven más ricos — y Claude arranca cada sesión con el estado real del proyecto, no desde cero."
             },
             {
                 type: "tip",
@@ -393,7 +570,7 @@ const LEARNING_PATH = [
         relatedPrompts: ["cc18", "cc13", "cc22", "pr4"]
     },
     {
-        id: 8,
+        id: 10,
         icon: "&#128197;",
         title: "Tu semana con Claude como HRBP",
         subtitle: "Rutinas semanales, plantillas para tareas recurrentes y cuándo NO usar IA",
@@ -418,6 +595,11 @@ const LEARNING_PATH = [
                 text: "Claude es potente, pero no es adecuado para todo. No uses Claude cuando la confidencialidad sea crítica y no tengas certeza de las políticas de privacidad de tu organización. No uses Claude para sustituir conversaciones humanas reales: una conversación difícil con un Senior Manager sobre su performance necesita tu presencia y tu empatía, no una respuesta generada por IA. No delegues en Claude decisiones que requieren tu juicio contextual sobre personas concretas. Y no uses Claude cuando el tiempo de briefing a la IA es mayor que el tiempo de hacer la tarea directamente: para un email de dos líneas, escríbelo tú."
             },
             {
+                type: "concept",
+                title: "Comandos de referencia rápida",
+                text: "Comandos de arranque en PowerShell: 'claude' (lanza Claude Code en la carpeta actual), 'claude -c' o 'claude --continue' (retoma la última sesión con todo el contexto), 'claude \"prompt\"' (modo one-shot, ejecuta y devuelve sin modo interactivo). Slash commands dentro de Claude Code: /clear (limpia contexto de la sesión — úsalo al cambiar de tema), /init (genera CLAUDE.md del proyecto leyendo archivos), /memory (gestiona memoria persistente entre sesiones), /model (cambia entre Opus, Sonnet y Haiku), /cost (muestra coste acumulado de la sesión), /undo (revierte el último cambio). Tecla Escape para interrumpir en cualquier momento."
+            },
+            {
                 type: "tip",
                 text: "Para medir tu ganancia real de productividad, durante las primeras 4 semanas anota cuánto tiempo te habría llevado cada tarea sin Claude. Muchos HRBPs descubren que la mayor ganancia no está en las tareas de redacción (donde el ahorro es de 15-20 minutos) sino en las tareas de análisis y síntesis (donde el ahorro puede ser de 1-2 horas). Este dato te ayuda a priorizar dónde aplicar más Claude en tu rutina."
             },
@@ -434,6 +616,20 @@ const LEARNING_PATH = [
             }
         ],
         resources: [
+            {
+                name: "Workday: Claude Certified Architect Foundations",
+                url: "https://wd103.myworkday.com/accenture/d/inst/15$378651/17816$38282.htmld",
+                type: "curso",
+                desc: "Certificación oficial completa — cubre fundamentos técnicos y prácticos de Claude, con trazabilidad de horas formativas",
+                free: true
+            },
+            {
+                name: "Workday: Claude Code in Action",
+                url: "https://wd103.myworkday.com/accenture/d/inst/15$378651/17816$38282.htmld",
+                type: "curso",
+                desc: "Uso práctico de Claude Code: comandos, flujos de trabajo y automatización",
+                free: true
+            },
             {
                 name: "Hacking HR: Guía Claude para HR",
                 url: "https://hackinghrlab.io/resources/claude-ai-for-hr",
