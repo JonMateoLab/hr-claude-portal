@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Claude para HR — Software &amp; Platform Engineering — Accenture</title>
+<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-group">
+                <img class="logo-spe-img" id="logo-spe" alt="S&amp;PE"/>
+                <div class="logo-divider"></div>
+                <img class="logo-acn-img" id="logo-acn" alt="Accenture"/>
+            </div>
+            <div class="nav-links">
+                <a href="#inicio" class="nav-link active">Inicio</a>
+                <a href="#itinerario" class="nav-link">Itinerario</a>
+                <a href="#generador" class="nav-link">Generador</a>
+                <a href="#ejercicios" class="nav-link">Ejercicios</a>
+                <a href="#prompts" class="nav-link">Biblioteca</a>
+            </div>
+            <button class="nav-toggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="inicio" class="hero">
+        <canvas id="hero-particles"></canvas>
+        <div class="hero-content">
+            <div class="hero-badge">Software &amp; Platform Engineering</div>
+            <h1>Domina Claude en tu<br><span class="gradient-text">trabajo diario de HR</span></h1>
+            <p class="hero-subtitle">Itinerario formativo paso a paso, prompts listos para usar y herramientas para que el equipo de HRBP de S&amp;PE aproveche la IA al maximo.</p>
+            <div class="hero-actions">
+                <a href="#itinerario" class="btn btn-primary">Empezar el itinerario</a>
+                <a href="#generador" class="btn btn-secondary">Generador de Prompts</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">8</span>
+                    <span class="stat-label">Capitulos formativos</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">152</span>
+                    <span class="stat-label">Prompts listos</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">6</span>
+                    <span class="stat-label">Ejercicios guiados</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ITINERARIO FORMATIVO -->
+    <section id="itinerario" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Itinerario Formativo</h2>
+                <p>8 capitulos para dominar Claude como HRBP. Avanza a tu ritmo, cada capitulo se apoya en el anterior.</p>
+            </div>
+            <div class="learning-path" id="learning-path"></div>
+        </div>
+    </section>
+
+    <!-- GENERADOR DE PROMPTS -->
+    <section id="generador" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Generador de Prompts</h2>
+                <p>Selecciona que necesitas y te generamos el prompt perfecto para tu caso.</p>
+            </div>
+
+            <div class="generator-container">
+                <div class="generator-form">
+                    <div class="form-group">
+                        <label>Que quieres hacer?</label>
+                        <select id="gen-task">
+                            <option value="">Selecciona una tarea...</option>
+                            <option value="briefing">Preparar un briefing para leadership</option>
+                            <option value="analizar">Analizar datos de HR / workforce</option>
+                            <option value="talent-review">Preparar un talent review</option>
+                            <option value="comunicar">Redactar comunicacion interna</option>
+                            <option value="conversacion">Preparar una conversacion dificil</option>
+                            <option value="presentacion">Crear una presentacion HTML</option>
+                            <option value="engagement">Plan de engagement / retention</option>
+                            <option value="politica">Crear/revisar politica HR</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contexto adicional (opcional)</label>
+                        <textarea id="gen-context" placeholder="Ej: Practice de Cloud & Infra, equipo de 45 personas, audience es el MD de la practice..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Formato de salida</label>
+                        <select id="gen-format">
+                            <option value="texto">Texto / Documento</option>
+                            <option value="tabla">Tabla / Datos estructurados</option>
+                            <option value="html">HTML (presentacion/web)</option>
+                            <option value="email">Email</option>
+                            <option value="one-pager">One-pager ejecutivo</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tono</label>
+                        <div class="tone-options">
+                            <label class="tone-option">
+                                <input type="radio" name="tone" value="ejecutivo" checked>
+                                <span>Ejecutivo</span>
+                            </label>
+                            <label class="tone-option">
+                                <input type="radio" name="tone" value="cercano">
+                                <span>Cercano</span>
+                            </label>
+                            <label class="tone-option">
+                                <input type="radio" name="tone" value="directo">
+                                <span>Directo</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-full" id="generate-btn">Generar Prompt</button>
+                </div>
+
+                <div class="generator-output" id="generator-output">
+                    <div class="output-placeholder">
+                        <span class="placeholder-icon">&#10024;</span>
+                        <p>Tu prompt aparecera aqui.<br>Selecciona las opciones y pulsa "Generar".</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EJERCICIOS PRACTICOS -->
+    <section id="ejercicios" class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Ejercicios Practicos</h2>
+                <p>Aprende haciendo. Tutoriales paso a paso para tu dia a dia como HRBP.</p>
+            </div>
+            <div class="exercises-grid" id="exercises-grid"></div>
+        </div>
+    </section>
+
+    <!-- BIBLIOTECA DE PROMPTS -->
+    <section id="prompts" class="section section-alt">
+        <div class="container">
+            <div class="section-header">
+                <h2>Biblioteca de Prompts HR</h2>
+                <p>152 prompts organizados por categoria. Copia, pega y adapta.</p>
+            </div>
+            <div class="filter-bar" id="filter-bar"></div>
+            <div class="prompts-grid" id="prompts-grid"></div>
+        </div>
+    </section>
+
+    <!-- TIPS -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Tips para usar Claude como HRBP</h2>
+                <p>Consejos rapidos para sacarle el maximo partido en S&amp;PE.</p>
+            </div>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <div class="tip-icon">&#128270;</div>
+                    <h3>Se especifico con el contexto</h3>
+                    <p>Incluye siempre: tu rol (HRBP), la practice, el nivel del audience (MD, People Lead, equipo), y que decision necesitas facilitar.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">&#128202;</div>
+                    <h3>Pega datos concretos</h3>
+                    <p>Claude trabaja mejor con datos. Pega tablas de headcount, attrition, engagement scores. Cuanto mas contexto, mejor el output.</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">&#128260;</div>
+                    <h3>Itera sin miedo</h3>
+                    <p>El primer resultado rara vez es el final. Pide ajustes: "hazlo mas ejecutivo", "anade el impacto en negocio", "reduce a 200 palabras".</p>
+                </div>
+                <div class="tip-card">
+                    <div class="tip-icon">&#127919;</div>
+                    <h3>Pide el formato que necesitas</h3>
+                    <p>Claude puede darte tablas, emails, one-pagers, HTML con graficos, scripts de conversacion. Especifica el formato desde el principio.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <p>Portal interno de IA para <strong>HR — Software &amp; Platform Engineering</strong> — Accenture</p>
+        </div>
+    </footer>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div class="modal-content" id="modal-content"></div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">Prompt copiado al portapapeles</div>
+
+    <script src="particles.js"></script>
+    <script src="logos.js"></script>
+    <script src="data.js"></script>
+    <script src="exercises.js"></script>
+    <script src="learning-path.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
