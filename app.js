@@ -105,7 +105,7 @@ function renderPrompts(filter = currentFilter) {
     grid.innerHTML = filtered.map(p => {
         const lvl = p.level ? `<span class="prompt-level lvl-${levelSlug(p.level)}">${p.level}</span>` : '';
         return `
-        <div class="prompt-card" data-category="${p.cat}">
+        <div class="prompt-card" data-category="${p.cat}" data-prompt-id="${p.id}">
             <div class="prompt-card-header">
                 <span class="prompt-category">${p.cat}</span>
                 <button class="fav-btn${isFav(p.id) ? ' fav-on' : ''}" onclick="toggleFav('${p.id}'); this.classList.toggle('fav-on')" title="Marcar como favorito" aria-label="Marcar como favorito">&#9733;</button>
@@ -118,7 +118,7 @@ function renderPrompts(filter = currentFilter) {
             </div>
             <div class="prompt-card-actions">
                 <button class="btn btn-sm btn-secondary btn-expand" onclick="toggleExpand(this)">Ver completo</button>
-                <button class="btn btn-sm btn-copy" onclick="copyPromptText('${p.id}')">Copiar</button>
+                <button class="btn btn-sm btn-copy" onclick="copyPromptText('${p.id}', this)">Copiar</button>
             </div>
         </div>`;
     }).join('');
@@ -145,15 +145,28 @@ function renderExercises() {
 }
 
 // ===== COPY =====
-function copyPromptText(id) {
+function flashCopied(btn) {
+    if (!btn) return;
+    if (btn._copyT) clearTimeout(btn._copyT);
+    var original = btn.dataset.label || btn.textContent;
+    btn.dataset.label = original;
+    btn.classList.add('copied');
+    btn.innerHTML = '&#10003; Copiado';
+    btn._copyT = setTimeout(function () {
+        btn.classList.remove('copied');
+        btn.textContent = btn.dataset.label;
+    }, 1600);
+}
+
+function copyPromptText(id, btn) {
     const prompt = PROMPTS.find(p => p.id === id);
     if (prompt) {
-        navigator.clipboard.writeText(prompt.text).then(() => showToast());
+        navigator.clipboard.writeText(prompt.text).then(() => { showToast(); flashCopied(btn); });
     }
 }
 
-function copyText(text) {
-    navigator.clipboard.writeText(text).then(() => showToast());
+function copyText(text, btn) {
+    navigator.clipboard.writeText(text).then(() => { showToast(); flashCopied(btn); });
 }
 
 // ===== TOGGLE EXPAND =====
@@ -182,7 +195,7 @@ function openExercise(id) {
                 <p>${step.text}</p>
                 ${step.code ? `
                     <div class="code-block">
-                        <button class="copy-code" onclick="copyText(\`${escapeTemplate(step.code)}\`)">Copiar</button>
+                        <button class="copy-code" onclick="copyText(\`${escapeTemplate(step.code)}\`, this)">Copiar</button>
                         ${escapeHtml(step.code)}
                     </div>
                 ` : ''}
@@ -210,8 +223,20 @@ document.addEventListener('keydown', (e) => {
 function closeModal() {
     document.getElementById('modal-overlay').classList.remove('active');
     const m = document.querySelector('.modal');
-    if (m) m.classList.remove('modal-chapter');
+    if (m) m.classList.remove('modal-chapter', 'modal-fullscreen');
     document.body.style.overflow = '';
+}
+
+// Modo presentación: expande el visor de capítulo a pantalla completa.
+function toggleChapterFullscreen() {
+    const m = document.querySelector('.modal');
+    if (!m) return;
+    const on = m.classList.toggle('modal-fullscreen');
+    const btn = document.getElementById('cv-fs-btn');
+    if (btn) {
+        btn.classList.toggle('active', on);
+        btn.title = on ? 'Salir del modo presentación' : 'Modo presentación';
+    }
 }
 
 // ===== GENERATOR =====
@@ -472,10 +497,15 @@ function renderLearningPath() {
 
     const stops = LEARNING_PATH.map((ch, i) => {
         const side = i % 2 === 0 ? 'jstop-left' : 'jstop-right';
+        const chips = CHAPTER_CHIPS[ch.id] || ch.topics;
         return `
-        <div class="journey-stop ${side}" onclick="openChapter(${ch.id})">
-            <div class="journey-card">
+        <div class="journey-stop ${side}" data-chapter="${ch.id}">
+            <div class="journey-card" role="button" tabindex="0" aria-expanded="false"
+                 aria-label="Capítulo ${ch.id}: ${ch.title} — ver temario"
+                 onclick="toggleChapterTopics(this)"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggleChapterTopics(this);}">
                 <div class="journey-deco" style="animation-delay:${(i * 0.37).toFixed(2)}s">${cardDeco(ch.id)}</div>
+                <span class="jc-done-flag" aria-hidden="true">&#10003;</span>
                 <div class="jc-meta">
                     <span class="chapter-difficulty diff-${ch.difficulty}">${ch.difficulty}</span>
                     <span class="chapter-duration">&#9201; ${ch.duration}</span>
@@ -485,11 +515,23 @@ function renderLearningPath() {
                     <h3>${ch.title}</h3>
                 </div>
                 <p class="jc-subtitle">${ch.subtitle}${/[.!?…]$/.test(ch.subtitle.trim()) ? '' : '.'}</p>
-                <div class="jc-topics">
-                    ${ch.topics.slice(0, 3).map(t => `<span class="jc-topic">${t}</span>`).join('')}
+                <div class="jc-topics-wrap">
+                    <span class="jc-topics-toggle">
+                        <span class="jc-tt-label">Temario</span>
+                        <span class="jc-tt-count">${chips.length}</span>
+                        <span class="jc-tt-chevron" aria-hidden="true">&#9662;</span>
+                    </span>
+                    <div class="jc-topics-panel" onclick="event.stopPropagation()">
+                        <div class="jc-topics-inner">
+                            ${chips.map(t => `<span class="jc-topic">${t}</span>`).join('')}
+                        </div>
+                        <button class="jc-open" type="button" onclick="event.stopPropagation(); openChapter(${ch.id})">
+                            Abrir capítulo &#8594;
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="journey-node">${ch.id}</div>
+            <div class="journey-node" id="jnode-${ch.id}">${ch.id}</div>
             <div class="journey-spacer"></div>
         </div>`;
     }).join('');
@@ -497,6 +539,8 @@ function renderLearningPath() {
     container.innerHTML = `
         <div class="journey">
             <div class="journey-line"></div>
+            <div class="journey-line-progress" id="journey-progress"></div>
+            <div class="journey-rocket" id="journey-rocket" aria-hidden="true">${travelRocketSVG()}</div>
             <div class="journey-marker">
                 <div class="journey-marker-icon">${journeyRocketSVG()}</div>
                 <div class="journey-marker-text">Inicio del viaje</div>
@@ -507,6 +551,294 @@ function renderLearningPath() {
                 <div class="journey-marker-text">&#161;Dominas Claude!</div>
             </div>
         </div>`;
+
+    setupJourneyRocket();
+}
+
+// Expand/collapse the per-chapter topic list inline. Triggered by clicking
+// anywhere on the card (accordion). The "Abrir capítulo" CTA opens the modal.
+function toggleChapterTopics(el) {
+    const card = el.classList.contains('journey-card') ? el : el.closest('.journey-card');
+    const wrap = card ? card.querySelector('.jc-topics-wrap') : el.closest('.jc-topics-wrap');
+    if (!wrap) return;
+    const panel = wrap.querySelector('.jc-topics-panel');
+    const isOpen = wrap.classList.toggle('open');
+    if (card) card.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    panel.style.maxHeight = isOpen ? panel.scrollHeight + 'px' : '0px';
+    if (typeof updateJourneyRocket === 'function') updateJourneyRocket();
+}
+
+// ===== CHAPTER COMPLETION + PROGRESS =====
+// Short 1–2 word chips shown on the cards (the full topics stay in the modal).
+const CHAPTER_CHIPS = {
+    1: ['LLMs', 'Claude vs IAs', 'Conversación', 'Interfaz', 'Glosario'],
+    2: ['Contexto', 'Ficha HRBP', 'Proyecto base', 'Ajustes'],
+    3: ['CRAFT', 'Iterar', 'Etiquetas XML', 'Errores'],
+    4: ['Pegar datos', 'Métricas', 'Visualizaciones', 'Profundizar'],
+    5: ['Estructura', 'Registro', 'HTML', 'Exportar PDF'],
+    6: ['Asesor', 'Propuestas', 'Narrativas', 'Briefings'],
+    7: ['Talent review', 'Performance', 'Engagement', 'Planes'],
+    8: ['Claude Code', 'Asistente/Agente', 'CLAUDE.md', 'Skills', 'Comandos'],
+    9: ['Qué compartir', 'Anonimizar', 'Contratos', 'Checklist'],
+    10: ['Prompt chaining', 'Projects', 'Plantillas', 'Flujos'],
+    11: ['Rutina semanal', 'Plantillas', 'Productividad', 'Cuándo NO']
+};
+
+const DONE_KEY = 'hrChaptersDone';
+function getDoneChapters() {
+    try { return JSON.parse(localStorage.getItem(DONE_KEY)) || []; } catch (e) { return []; }
+}
+function isChapterDone(id) { return getDoneChapters().indexOf(id) !== -1; }
+function setChapterDone(id, done) {
+    var arr = getDoneChapters();
+    var i = arr.indexOf(id);
+    if (done && i === -1) arr.push(id);
+    else if (!done && i !== -1) arr.splice(i, 1);
+    try { localStorage.setItem(DONE_KEY, JSON.stringify(arr)); } catch (e) {}
+    refreshProgressUI();
+    updateChapterDoneBtn(id);
+}
+function toggleChapterDone(id) { setChapterDone(id, !isChapterDone(id)); }
+function completedCount() {
+    var done = getDoneChapters();
+    return LEARNING_PATH.filter(function (c) { return done.indexOf(c.id) !== -1; }).length;
+}
+
+// Reflect completion across the itinerary: node checks, card state, the rocket
+// position along the line, and the hero progress widget.
+function refreshProgressUI() {
+    var done = getDoneChapters();
+    LEARNING_PATH.forEach(function (ch) {
+        var isDone = done.indexOf(ch.id) !== -1;
+        var node = document.getElementById('jnode-' + ch.id);
+        if (node) {
+            node.classList.toggle('done', isDone);
+            node.innerHTML = isDone ? '&#10003;' : ch.id;
+        }
+        var stop = document.querySelector('.journey-stop[data-chapter="' + ch.id + '"]');
+        if (stop) {
+            var card = stop.querySelector('.journey-card');
+            if (card) card.classList.toggle('chapter-done', isDone);
+        }
+    });
+    updateJourneyRocket();
+    updateHeroProgress();
+    updateContinueBanner();
+    if (typeof refreshConstellationDone === 'function') refreshConstellationDone();
+}
+
+function updateChapterDoneBtn(id) {
+    var btn = document.getElementById('cv-done-btn');
+    if (!btn || cvChapterId !== id) return;
+    var done = isChapterDone(id);
+    btn.classList.toggle('done', done);
+    btn.innerHTML = done ? '&#10003; Completado' : 'Marcar como completado';
+}
+
+function updateHeroProgress() {
+    var el = document.getElementById('hero-progress');
+    if (!el) return;
+    var total = LEARNING_PATH.length, done = completedCount();
+    var pct = total ? Math.round(done / total * 100) : 0;
+    var c = el.querySelector('.hp-count'); if (c) c.textContent = done + ' / ' + total;
+    var f = el.querySelector('.hp-fill'); if (f) f.style.width = pct + '%';
+    var p = el.querySelector('.hp-pct'); if (p) p.textContent = pct + '%';
+}
+
+// "Continuar donde lo dejaste" banner (element added in the hero).
+function updateContinueBanner() {
+    var el = document.getElementById('continue-banner');
+    if (!el) return;
+    var next = LEARNING_PATH.find(function (c) { return !isChapterDone(c.id); });
+    var done = completedCount();
+    if (!next || done === 0) {
+        // Nothing started yet, or everything finished → hide the banner.
+        el.classList.remove('visible');
+        el.onclick = null;
+        return;
+    }
+    el.classList.add('visible');
+    var label = el.querySelector('.cb-label');
+    if (label) label.innerHTML = 'Continúa por el <strong>Capítulo ' +
+        String(next.id).padStart(2, '0') + ' · ' + next.title + '</strong>';
+    el.onclick = function () { openChapter(next.id); };
+}
+
+// ===== TRAVELING ROCKET (rides the line to reflect real completion) =====
+function travelRocketSVG() {
+    return `<svg viewBox="0 0 64 64" class="journey-rocket-svg"><defs>
+        <linearGradient id="trk1" x1=".5" y1="0" x2=".5" y2="1"><stop offset="0%" stop-color="#C966FF"/><stop offset="100%" stop-color="#A100FF"/></linearGradient>
+        <linearGradient id="trk2" x1=".5" y1="0" x2=".5" y2="1"><stop offset="0%" stop-color="#ff6b4a"/><stop offset="100%" stop-color="#ffb400"/></linearGradient>
+    </defs>
+    <path d="M32 4 C32 4 20 18 20 34 L20 44 L26 40 L26 48 L32 52 L38 48 L38 40 L44 44 L44 34 C44 18 32 4 32 4Z" fill="url(#trk1)"/>
+    <circle cx="32" cy="26" r="4.5" fill="#fff" opacity=".92"/>
+    <circle cx="32" cy="26" r="2.6" fill="#A100FF"/>
+    <path d="M14 36 Q18 30 20 34" fill="#6E54E6"/><path d="M44 34 Q46 30 50 36" fill="#6E54E6"/>
+    <path d="M26 50 Q28 60 32 62 Q36 60 38 50" fill="url(#trk2)" opacity=".95">
+        <animate attributeName="d" values="M26 50 Q28 60 32 62 Q36 60 38 50;M27 50 Q29 57 32 59 Q35 57 37 50;M26 50 Q28 60 32 62 Q36 60 38 50" dur="0.5s" repeatCount="indefinite"/>
+    </path>
+    </svg>`;
+}
+
+function updateJourneyRocket() {
+    var lp = document.getElementById('learning-path');
+    if (lp && lp.hidden) return;                 // timeline not visible (map view)
+    const journey = document.querySelector('.journey');
+    const rocket = document.getElementById('journey-rocket');
+    const progress = document.getElementById('journey-progress');
+    if (!journey || !rocket || !progress) return;
+    const lineTop = 50;                          // matches .journey-line top
+    const travel = journey.offsetHeight - 100;   // top 50px + bottom 50px insets
+    // The rocket travels down the line as you SCROLL through the chapters.
+    const rect = journey.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    var sp = (vh * 0.5 - rect.top) / (rect.height || 1);
+    sp = Math.max(0, Math.min(1, sp));
+    rocket.style.top = (lineTop + sp * travel) + 'px';
+    // The bright trail reflects your REAL progress (completed chapters).
+    const total = LEARNING_PATH.length;
+    const frac = total ? completedCount() / total : 0;
+    progress.style.height = Math.max(0, frac * travel) + 'px';
+}
+
+let _jrTicking = false;
+function _jrOnScroll() {
+    if (_jrTicking) return;
+    _jrTicking = true;
+    requestAnimationFrame(function () {
+        updateJourneyRocket();
+        if (typeof updateConstellationRocket === 'function') updateConstellationRocket();
+        _jrTicking = false;
+    });
+}
+function setupJourneyRocket() {
+    updateJourneyRocket();
+    window.removeEventListener('scroll', _jrOnScroll);
+    window.removeEventListener('resize', _jrOnScroll);
+    window.addEventListener('scroll', _jrOnScroll, { passive: true });
+    window.addEventListener('resize', _jrOnScroll, { passive: true });
+}
+
+// Cohete dedicado de la constelacion: IDs de degradado propios (trkc*) para que
+// pinte aunque el cohete del timeline (mismos paths) este en display:none.
+function constellationRocketSVG() {
+    return `<svg viewBox="0 0 64 64" class="cst-rocket-svg"><defs>
+        <linearGradient id="trkc1" x1=".5" y1="0" x2=".5" y2="1"><stop offset="0%" stop-color="#C966FF"/><stop offset="100%" stop-color="#A100FF"/></linearGradient>
+        <linearGradient id="trkc2" x1=".5" y1="0" x2=".5" y2="1"><stop offset="0%" stop-color="#ff6b4a"/><stop offset="100%" stop-color="#ffb400"/></linearGradient>
+    </defs>
+    <path d="M32 4 C32 4 20 18 20 34 L20 44 L26 40 L26 48 L32 52 L38 48 L38 40 L44 44 L44 34 C44 18 32 4 32 4Z" fill="url(#trkc1)"/>
+    <circle cx="32" cy="26" r="4.5" fill="#fff" opacity=".92"/>
+    <circle cx="32" cy="26" r="2.6" fill="#A100FF"/>
+    <path d="M14 36 Q18 30 20 34" fill="#6E54E6"/><path d="M44 34 Q46 30 50 36" fill="#6E54E6"/>
+    <path d="M26 50 Q28 60 32 62 Q36 60 38 50" fill="url(#trkc2)" opacity=".95">
+        <animate attributeName="d" values="M26 50 Q28 60 32 62 Q36 60 38 50;M27 50 Q29 57 32 59 Q35 57 37 50;M26 50 Q28 60 32 62 Q36 60 38 50" dur="0.5s" repeatCount="indefinite"/>
+    </path>
+    </svg>`;
+}
+
+// ===== VISTA MAPA / CONSTELACION (toggle con el timeline) =====
+// Posiciones (x%, y%) de cada capitulo siguiendo una onda suave (sin/coseno),
+// que se lee como una ruta estelar armónica en lugar de un zigzag.
+var CONSTELLATION_POS = [
+    [6, 48], [15, 63], [24, 70], [33, 63], [42, 48],
+    [51, 33], [60, 26], [69, 32], [78, 47], [87, 62], [95, 70]
+];
+// Catmull-Rom -> cubic Bezier: una curva suave que pasa por todos los puntos.
+function smoothPath(pts) {
+    if (!pts.length) return '';
+    if (pts.length < 3) return 'M' + pts.map(function (p) { return p[0] + ',' + p[1]; }).join(' L');
+    var d = 'M' + pts[0][0] + ',' + pts[0][1];
+    for (var i = 0; i < pts.length - 1; i++) {
+        var p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || pts[i + 1];
+        var c1x = p1[0] + (p2[0] - p0[0]) / 6, c1y = p1[1] + (p2[1] - p0[1]) / 6;
+        var c2x = p2[0] - (p3[0] - p1[0]) / 6, c2y = p2[1] - (p3[1] - p1[1]) / 6;
+        d += ' C' + c1x.toFixed(2) + ',' + c1y.toFixed(2) + ' ' + c2x.toFixed(2) + ',' + c2y.toFixed(2) + ' ' + p2[0] + ',' + p2[1];
+    }
+    return d;
+}
+function renderConstellation() {
+    var el = document.getElementById('constellation-view');
+    if (!el) return;
+    var pts = LEARNING_PATH.map(function (c, i) { return CONSTELLATION_POS[i] || [50, 50]; });
+    var d = smoothPath(pts);
+    var nodes = LEARNING_PATH.map(function (c, i) {
+        var p = CONSTELLATION_POS[i] || [50, 50];
+        return '<button class="cst-node" type="button" data-chapter="' + c.id + '" ' +
+            'style="left:' + p[0] + '%;top:' + p[1] + '%" onclick="openChapter(' + c.id + ')" ' +
+            'aria-label="Capítulo ' + c.id + ': ' + c.title + '">' +
+            '<span class="cst-dot">' + c.id + '</span>' +
+            '<span class="cst-label">' + c.title + '</span></button>';
+    }).join('');
+    el.innerHTML =
+        '<svg class="cst-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' +
+        '<defs><linearGradient id="cstgrad" x1="0" y1="0" x2="1" y2="0">' +
+        '<stop offset="0%" stop-color="#A100FF"/><stop offset="55%" stop-color="#6E54E6"/><stop offset="100%" stop-color="#5db4f5"/>' +
+        '</linearGradient></defs>' +
+        '<path id="cst-path" d="' + d + '" fill="none" stroke="url(#cstgrad)" stroke-width="2" ' +
+        'vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" opacity="0.26"/>' +
+        '<path class="cst-flow" d="' + d + '" fill="none" stroke="url(#cstgrad)" stroke-width="2" ' +
+        'vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-dasharray="1.5 7"/>' +
+        '<path id="cst-progress" class="cst-progress" d="' + d + '" fill="none" stroke="url(#cstgrad)" stroke-width="2.6" ' +
+        'vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg>' +
+        '<div class="cst-marker cst-start" style="left:7%;top:19%"><span class="cm-icon">&#128640;</span><span class="cm-label">Inicio del viaje</span></div>' +
+        '<div class="cst-marker cst-end" style="left:90%;top:91%"><span class="cm-icon">&#127942;</span><span class="cm-label">&iexcl;Dominas Claude!</span></div>' +
+        '<div class="cst-rocket" id="cst-rocket" aria-hidden="true">' + constellationRocketSVG() + '</div>' +
+        nodes;
+    refreshConstellationDone();
+}
+function updateConstellationRocket() {
+    var el = document.getElementById('constellation-view');
+    var path = document.getElementById('cst-path');
+    var prog = document.getElementById('cst-progress');
+    var rocket = document.getElementById('cst-rocket');
+    if (!el || !path || !rocket || el.hidden) return;
+    var len = path.getTotalLength();
+    if (!len) return;
+    var rect = el.getBoundingClientRect();
+    // Estela = avance real (capitulos completados).
+    var total = LEARNING_PATH.length;
+    var frac = total ? completedCount() / total : 0;
+    if (prog) { prog.style.strokeDasharray = len; prog.style.strokeDashoffset = len * (1 - frac); }
+    // Cohete = posicion de scroll a lo largo de la ruta (se desplaza por los capitulos).
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var sp = (vh * 0.5 - rect.top) / (rect.height || 1);
+    sp = Math.max(0, Math.min(1, sp));
+    var pt = path.getPointAtLength(len * sp);
+    var ahead = path.getPointAtLength(Math.min(len, len * sp + 1));
+    // El viewBox 0..100 se estira al contenedor (preserveAspectRatio none): la
+    // tangente para orientar el cohete hay que medirla en píxeles reales.
+    var dx = (ahead.x - pt.x) * (rect.width || 1) / 100;
+    var dy = (ahead.y - pt.y) * (rect.height || 1) / 100;
+    var ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    rocket.style.left = pt.x + '%';
+    rocket.style.top = pt.y + '%';
+    rocket.style.transform = 'translate(-50%,-50%) rotate(' + (ang + 90).toFixed(1) + 'deg)';
+}
+function refreshConstellationDone() {
+    var nextC = LEARNING_PATH.find(function (c) { return !isChapterDone(c.id); });
+    var nextId = nextC ? nextC.id : null;
+    LEARNING_PATH.forEach(function (c) {
+        var n = document.querySelector('.cst-node[data-chapter="' + c.id + '"]');
+        if (n) {
+            n.classList.toggle('done', isChapterDone(c.id));
+            n.classList.toggle('cst-next', c.id === nextId);   // proximo capitulo: late como faro
+        }
+    });
+    updateConstellationRocket();
+}
+function setItinView(view) {
+    var lp = document.getElementById('learning-path');
+    var cv = document.getElementById('constellation-view');
+    var isMap = view === 'map';
+    if (lp) lp.hidden = isMap;
+    if (cv) cv.hidden = !isMap;
+    document.querySelectorAll('.ivt-btn').forEach(function (b) {
+        b.classList.toggle('active', b.dataset.view === view);
+        b.setAttribute('aria-pressed', b.dataset.view === view ? 'true' : 'false');
+    });
+    if (isMap) renderConstellation();
+    try { localStorage.setItem('hrItinView', view); } catch (e) {}
 }
 
 // ===== CHAPTER VIEWER (SLIDE-BASED) =====
@@ -538,6 +870,9 @@ function openChapter(id) {
                 <div class="cv-section">${String(ch.id).padStart(2,'0')} &mdash; ${ch.title.toUpperCase()}</div>
                 <div class="cv-progress"><div class="cv-bar" style="width:${(1/cvTotal)*100}%"></div></div>
                 <div class="cv-counter">1 / ${cvTotal}</div>
+                <button class="cv-done-btn${isChapterDone(ch.id) ? ' done' : ''}" id="cv-done-btn" type="button"
+                    onclick="toggleChapterDone(${ch.id})" title="Marcar capítulo como completado">${isChapterDone(ch.id) ? '&#10003; Completado' : 'Marcar como completado'}</button>
+                <button class="cv-fs-btn" id="cv-fs-btn" type="button" onclick="toggleChapterFullscreen()" title="Modo presentación" aria-label="Modo presentación">&#9974;</button>
             </div>
             <div class="cv-slides">
                 ${slides.map((s,i) => `<div class="cv-slide${i===0?' cv-active':''}">${s}</div>`).join('')}
@@ -577,6 +912,8 @@ function goToSlide(idx) {
     const nextBtn = document.querySelector('.cv-next');
     nextBtn.disabled = false;
     if (cvCurrent === cvTotal - 1) {
+        // Reaching the last slide auto-marks the chapter as completed.
+        if (!isChapterDone(cvChapterId)) setChapterDone(cvChapterId, true);
         const next = LEARNING_PATH.find(c => c.id === cvChapterId + 1);
         if (next) {
             nextBtn.innerHTML = 'Cap&iacute;tulo siguiente &#8594;';
@@ -1008,11 +1345,259 @@ function cvWidgetGlossary() {
         </div>`;
 }
 
+// ===== THEME (claro / oscuro / sistema) =====
+const THEME_KEY = 'hrThemePref';
+
+function getThemePref() {
+    try { return localStorage.getItem(THEME_KEY) || 'system'; } catch (e) { return 'system'; }
+}
+
+function resolveTheme(pref) {
+    if (pref === 'system') {
+        return (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    }
+    return pref;
+}
+
+function applyThemePref(pref) {
+    document.documentElement.setAttribute('data-theme', resolveTheme(pref));
+    document.querySelectorAll('.theme-opt').forEach(b => {
+        const active = b.dataset.themeChoice === pref;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+}
+
+function setThemePref(pref) {
+    try { localStorage.setItem(THEME_KEY, pref); } catch (e) {}
+    applyThemePref(pref);
+}
+
+document.querySelectorAll('.theme-opt').forEach(b => {
+    b.addEventListener('click', () => setThemePref(b.dataset.themeChoice));
+});
+
+if (window.matchMedia) {
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+        if (getThemePref() === 'system') applyThemePref('system');
+    });
+}
+
+applyThemePref(getThemePref());
+
+// ===== GLOBAL SEARCH (Ctrl/Cmd + K) =====
+let _searchIndex = null;
+function buildSearchIndex() {
+    var idx = [];
+    LEARNING_PATH.forEach(function (c) {
+        idx.push({
+            type: 'Capítulo', action: 'chapter', id: c.id,
+            label: String(c.id).padStart(2, '0') + ' · ' + c.title,
+            sub: c.subtitle,
+            hay: (c.title + ' ' + c.subtitle + ' ' + (c.topics || []).join(' ') + ' ' + (CHAPTER_CHIPS[c.id] || []).join(' ')).toLowerCase()
+        });
+    });
+    if (typeof PROMPTS !== 'undefined') PROMPTS.forEach(function (p) {
+        idx.push({
+            type: 'Prompt', action: 'prompt', id: p.id,
+            label: p.title, sub: p.desc || p.cat,
+            hay: (p.title + ' ' + (p.desc || '') + ' ' + (p.cat || '') + ' ' + (p.text || '')).toLowerCase()
+        });
+    });
+    if (typeof EXERCISES !== 'undefined') EXERCISES.forEach(function (e) {
+        idx.push({
+            type: 'Ejercicio', action: 'exercise', id: e.id,
+            label: e.title, sub: e.desc,
+            hay: (e.title + ' ' + (e.desc || '')).toLowerCase()
+        });
+    });
+    return idx;
+}
+
+function openSearch() {
+    if (!_searchIndex) _searchIndex = buildSearchIndex();
+    var ov = document.getElementById('search-overlay');
+    if (!ov) return;
+    ov.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    var input = document.getElementById('search-input');
+    input.value = '';
+    runSearch('');
+    setTimeout(function () { input.focus(); }, 30);
+}
+function closeSearch() {
+    var ov = document.getElementById('search-overlay');
+    if (ov) ov.classList.remove('active');
+    if (!document.getElementById('modal-overlay').classList.contains('active')) document.body.style.overflow = '';
+}
+function runSearch(q) {
+    q = (q || '').trim().toLowerCase();
+    var results = document.getElementById('search-results');
+    if (!results) return;
+    if (q.length < 2) {
+        results.innerHTML = '<div class="search-hint">Escribe para buscar en capítulos, prompts y ejercicios…</div>';
+        return;
+    }
+    if (!_searchIndex) _searchIndex = buildSearchIndex();
+    var matches = _searchIndex.filter(function (it) { return it.hay.indexOf(q) !== -1; }).slice(0, 24);
+    if (!matches.length) {
+        results.innerHTML = '<div class="search-hint">Sin resultados para &ldquo;' + escapeHtml(q) + '&rdquo;.</div>';
+        return;
+    }
+    results.innerHTML = matches.map(function (m) {
+        var idArg = m.action === 'prompt' ? "'" + m.id + "'" : m.id;
+        return '<button class="search-result" type="button" onclick="searchGo(\'' + m.action + '\',' + idArg + ')">' +
+            '<span class="sr-type sr-' + m.action + '">' + m.type + '</span>' +
+            '<span class="sr-main"><span class="sr-label">' + escapeHtml(m.label) + '</span>' +
+            '<span class="sr-sub">' + escapeHtml(m.sub || '') + '</span></span>' +
+            '<span class="sr-arrow" aria-hidden="true">&#8594;</span></button>';
+    }).join('');
+}
+function searchGo(action, id) {
+    closeSearch();
+    if (action === 'chapter') openChapter(id);
+    else if (action === 'exercise') openExercise(id);
+    else if (action === 'prompt') goToPrompt(id);
+}
+function goToPrompt(id) {
+    renderPrompts('all');
+    var sec = document.getElementById('prompts');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function () {
+        var card = document.querySelector('.prompt-card[data-prompt-id="' + id + '"]');
+        if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.classList.add('flash');
+            setTimeout(function () { card.classList.remove('flash'); }, 1600);
+        }
+    }, 360);
+}
+
+(function wireSearch() {
+    var trigger = document.getElementById('search-trigger');
+    if (trigger) trigger.addEventListener('click', openSearch);
+    var input = document.getElementById('search-input');
+    if (input) input.addEventListener('input', function () { runSearch(input.value); });
+    var ov = document.getElementById('search-overlay');
+    if (ov) ov.addEventListener('click', function (e) { if (e.target === ov) closeSearch(); });
+    document.addEventListener('keydown', function (e) {
+        if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+            e.preventDefault();
+            var open = document.getElementById('search-overlay').classList.contains('active');
+            open ? closeSearch() : openSearch();
+        } else if (e.key === 'Escape' && document.getElementById('search-overlay').classList.contains('active')) {
+            closeSearch();
+        }
+    });
+})();
+
+// ===== ONBOARDING (mini-tour en la primera visita) =====
+var ONBOARD_KEY = 'hrOnboarded';
+var ONBOARD_STEPS = [
+    { icon: '&#128640;', title: 'Bienvenido/a al portal de Claude para HR', text: 'Tu itinerario formativo, 152 prompts listos y herramientas para dominar Claude como HRBP de S&amp;PE. Te lo enseñamos en 20 segundos.' },
+    { icon: '&#129518;', title: 'Itinerario con progreso real', text: 'Son 11 capítulos conectados. Marca los que completes y verás tu avance reflejado en la ruta. Haz clic en cualquier tarjeta para ver su temario.' },
+    { icon: '&#128269;', title: 'Busca cualquier cosa al instante', text: 'Pulsa <kbd>Ctrl</kbd> + <kbd>K</kbd> en cualquier momento para buscar en capítulos, prompts y ejercicios.' },
+    { icon: '&#127912;', title: 'A tu manera', text: 'Cambia entre tema claro y oscuro arriba a la derecha, y usa el <strong>Generador</strong> para crear prompts a tu medida. ¡Listo!' }
+];
+var _obStep = 0;
+function maybeShowOnboarding() {
+    var seen; try { seen = localStorage.getItem(ONBOARD_KEY); } catch (e) {}
+    if (!seen) showOnboarding();
+}
+function showOnboarding() {
+    _obStep = 0;
+    var ov = document.getElementById('onboard-overlay');
+    if (!ov) {
+        ov = document.createElement('div');
+        ov.className = 'onboard-overlay';
+        ov.id = 'onboard-overlay';
+        ov.innerHTML =
+            '<div class="onboard-card" role="dialog" aria-modal="true" aria-label="Bienvenida">' +
+            '<button class="onboard-skip" type="button" onclick="closeOnboarding()">Saltar</button>' +
+            '<div class="onboard-body" id="onboard-body"></div>' +
+            '<div class="onboard-foot"><div class="onboard-dots" id="onboard-dots"></div>' +
+            '<button class="btn btn-primary onboard-next" id="onboard-next" type="button" onclick="onboardNext()"></button></div>' +
+            '</div>';
+        document.body.appendChild(ov);
+        ov.addEventListener('click', function (e) { if (e.target === ov) closeOnboarding(); });
+    }
+    document.body.style.overflow = 'hidden';
+    renderOnboardStep();
+    requestAnimationFrame(function () { ov.classList.add('active'); });
+}
+function renderOnboardStep() {
+    var s = ONBOARD_STEPS[_obStep];
+    var body = document.getElementById('onboard-body');
+    if (body) body.innerHTML = '<div class="onboard-icon">' + s.icon + '</div><h3>' + s.title + '</h3><p>' + s.text + '</p>';
+    var dots = document.getElementById('onboard-dots');
+    if (dots) dots.innerHTML = ONBOARD_STEPS.map(function (_, i) { return '<span class="ob-dot' + (i === _obStep ? ' active' : '') + '"></span>'; }).join('');
+    var next = document.getElementById('onboard-next');
+    if (next) next.innerHTML = _obStep === ONBOARD_STEPS.length - 1 ? 'Empezar &#8594;' : 'Siguiente';
+}
+function onboardNext() {
+    if (_obStep < ONBOARD_STEPS.length - 1) { _obStep++; renderOnboardStep(); }
+    else closeOnboarding();
+}
+function closeOnboarding() {
+    try { localStorage.setItem(ONBOARD_KEY, '1'); } catch (e) {}
+    var ov = document.getElementById('onboard-overlay');
+    if (ov) { ov.classList.remove('active'); setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 250); }
+    if (!document.getElementById('modal-overlay').classList.contains('active')) document.body.style.overflow = '';
+}
+
+// ===== SCROLL REVEAL (animaciones de entrada) =====
+var _revealIO = null;
+function observeReveals() {
+    if (!window.IntersectionObserver) return;
+    if (!_revealIO) {
+        _revealIO = new IntersectionObserver(function (entries) {
+            entries.forEach(function (en) {
+                if (en.isIntersecting) {
+                    en.target.classList.add('reveal-in');
+                    _revealIO.unobserve(en.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -8% 0px' });
+    }
+    document.querySelectorAll('.section-header, .journey-stop, .tip-card, .exercise-card').forEach(function (el) {
+        if (!el.classList.contains('reveal')) {
+            el.classList.add('reveal');
+            _revealIO.observe(el);
+        }
+    });
+}
+
 // ===== INIT =====
 renderLearningPath();
+refreshProgressUI();   // paint completion state (node checks, rocket, hero progress)
 renderFilters();
 renderPrompts();
 renderExercises();
+observeReveals();
+maybeShowOnboarding();
+
+// Toggle de vista del itinerario (Linea de tiempo / Mapa)
+document.querySelectorAll('.ivt-btn').forEach(function (b) {
+    b.addEventListener('click', function () { setItinView(b.dataset.view); });
+});
+(function () {
+    var saved; try { saved = localStorage.getItem('hrItinView'); } catch (e) {}
+    if (saved === 'map') setItinView('map');
+})();
+
+// Itinerary background particles — seeded now that the journey is laid out,
+// so the field fills the full section height. Calmer "starfield" vs the hero.
+if (window.initParticles) {
+    initParticles(document.getElementById('itinerary-particles'), {
+        count: 90,
+        connect: false,        // pure starfield (no link lines) — much cheaper
+        interactive: false,    // no mouse repel/links over the reading area
+        resScale: 0.6,         // render the tall buffer at 60% then upscale
+        alphaBase: 0.18,
+        alphaRange: 0.5,
+        speed: 0.65
+    });
+}
 
 // Prompt sorting & view-mode controls
 const _sortSel = document.getElementById('prompt-sort');
