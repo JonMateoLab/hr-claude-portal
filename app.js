@@ -247,6 +247,10 @@ function generatePrompt() {
     const context = document.getElementById('gen-context').value;
     const format = document.getElementById('gen-format').value;
     const tone = document.querySelector('input[name="tone"]:checked').value;
+    const rol = (document.getElementById('gen-rol') || {}).value || '';
+    const audience = (document.getElementById('gen-audience') || {}).value || '';
+    const detail = (document.getElementById('gen-detail') || {}).value || '';
+    const constraints = (document.getElementById('gen-constraints') || {}).value || '';
 
     if (!task) { alert('Selecciona una tarea primero'); return; }
 
@@ -308,10 +312,19 @@ function generatePrompt() {
     };
 
     const t = templates[task];
-    let prompt = `${t.base}\n\n${t.task}.\n\n${t.details}`;
+    const detailMap = {
+        equilibrado: '',
+        resumen: 'Nivel de detalle: resumen ejecutivo. Ve a lo esencial, sin relleno.',
+        exhaustivo: 'Nivel de detalle: exhaustivo. Incluye matices, casos limite y supuestos.'
+    };
+    let prompt = `${rol || t.base}\n\n${t.task}.\n\n${t.details}`;
     if (context) prompt += `\n\nContexto adicional: ${context}`;
+    if (audience) prompt += `\n\nAudiencia: ${audience}.`;
     prompt += `\n\n${toneMap[tone]}`;
     prompt += `\n\n${formatMap[format]}`;
+    if (detail && detailMap[detail]) prompt += `\n\n${detailMap[detail]}`;
+    if (constraints) prompt += `\n\nRestricciones: ${constraints}`;
+    prompt += `\n\nAntes de responder, declara tus supuestos y limitaciones. Si te falta informacion clave para hacerlo bien, preguntamela en vez de inventarla.`;
 
     const output = document.getElementById('generator-output');
     output.innerHTML = `
@@ -330,6 +343,49 @@ function resetGenerator() {
     document.getElementById('generator-output').innerHTML = '<div class="output-placeholder"><span class="placeholder-icon">&#10024;</span><p>Tu prompt aparecera aqui.</p></div>';
 }
 
+// ===== COMPARADOR ANTES / DESPUÉS =====
+// Mismo objetivo, prompt básico vs prompt experto. Selector por caso.
+var COMPARISONS = [
+    { topic: 'Presentación', basic: 'Hazme una presentación sobre este tema.', expert: 'Crea una presentación ejecutiva de 10 slides para leadership con narrativa de consultoría, un mensaje principal por slide, datos convertidos en insights, diseño limpio, slide de decisión, matriz de riesgos, roadmap, speaker notes y preguntas difíciles.' },
+    { topic: 'Excel', basic: 'Analiza este Excel.', expert: 'Analiza este Excel como un experto en People Analytics: tendencias, outliers, riesgos, hipótesis de causa raíz e insights accionables priorizados por impacto. Declara tus supuestos antes de concluir.' },
+    { topic: 'PDF', basic: 'Resume este PDF.', expert: 'Analiza este PDF como un consultor senior: resumen ejecutivo, puntos críticos, riesgos, decisiones necesarias y próximos pasos. Señala lo que quede ambiguo o sin soporte.' },
+    { topic: 'Dashboard', basic: 'Hazme un dashboard con estos datos.', expert: 'Crea un dashboard interactivo con KPIs, filtros por unidad y nivel, gráficos, alertas para valores fuera de rango, un insight automático bajo cada gráfico y un resumen ejecutivo.' },
+    { topic: 'Email', basic: 'Escribe un email sobre esto.', expert: 'Convierte este análisis en un email ejecutivo: asunto claro, contexto breve, conclusión, decisión recomendada y acciones con responsable. Máximo 150 palabras, tono cercano y profesional.' },
+    { topic: 'Comunicación sensible', basic: 'Escribe el comunicado del cambio.', expert: 'Redacta este comunicado sensible y hazlo defendible ante Legal, Compliance y HR: tono humano y no defensivo, qué cambia, a quién afecta y por qué, más un FAQ que anticipe las dudas de empleados y managers.' },
+    { topic: 'Artifact', basic: 'Hazme una herramienta para esto.', expert: 'Crea un Artifact interactivo: define inputs, validaciones, cálculo automático, visualización de resultados, un resumen copiable y escenarios conservador/base/ambicioso.' },
+    { topic: 'Web', basic: 'Mejora esta web.', expert: 'Mejora esta web manteniendo su estructura: hero más claro, navegación sticky, tarjetas con hover, buscador y filtros combinables, botones de copiar, modo claro/oscuro y diseño responsive y accesible.' },
+    { topic: 'Talent review', basic: 'Ayúdame con el talent review.', expert: 'Prepara la calibración: distribución 9-box de esta población, narrativa por persona basada en hechos (2-3 frases), acciones recomendadas (promoción, PIP, movilidad) y preguntas difíciles del comité con respuestas.' },
+    { topic: 'Análisis de riesgos', basic: '¿Qué riesgos ves?', expert: 'Analiza los riesgos de esta decisión con matriz de impacto y probabilidad. Incluye riesgos reputacionales (empleados, managers, Legal, compliance), mitigaciones con owner y timing, y supuestos a validar.' }
+];
+
+function renderComparador() {
+    var chips = document.getElementById('cmp-chips');
+    var view = document.getElementById('cmp-view');
+    if (!chips || !view) return;
+
+    function show(i) {
+        var c = COMPARISONS[i];
+        view.innerHTML =
+            '<div class="gd-compare">' +
+            '<div class="gd-cmp gd-cmp-bad"><span class="gd-cmp-l">Prompt básico</span><p>' + escapeHtml(c.basic) + '</p></div>' +
+            '<div class="gd-cmp-arrow" aria-hidden="true">&#8594;</div>' +
+            '<div class="gd-cmp gd-cmp-good"><span class="gd-cmp-l">Prompt experto</span><p>' + escapeHtml(c.expert) + '</p>' +
+            '<button class="gd-copy" type="button" id="cmp-copy">Copiar prompt</button></div>' +
+            '</div>';
+        var btn = document.getElementById('cmp-copy');
+        if (btn) btn.addEventListener('click', function () { copyText(c.expert, btn); });
+        chips.querySelectorAll('.cmp-chip').forEach(function (b) { b.classList.toggle('active', parseInt(b.dataset.i) === i); });
+    }
+
+    chips.innerHTML = COMPARISONS.map(function (c, i) {
+        return '<button class="cmp-chip' + (i === 0 ? ' active' : '') + '" type="button" data-i="' + i + '">' + escapeHtml(c.topic) + '</button>';
+    }).join('');
+    chips.querySelectorAll('.cmp-chip').forEach(function (b) {
+        b.addEventListener('click', function () { show(parseInt(b.dataset.i)); });
+    });
+    show(0);
+}
+
 // ===== NAVIGATION =====
 const navToggle = document.querySelector('.nav-toggle');
 const navLinks = document.querySelector('.nav-links');
@@ -344,17 +400,91 @@ document.querySelectorAll('.nav-link').forEach(link => {
     });
 });
 
-window.addEventListener('scroll', () => {
-    const sections = ['inicio', 'prompts', 'ejercicios', 'generador'];
-    let current = '';
-    sections.forEach(id => {
-        const section = document.getElementById(id);
-        if (section && section.getBoundingClientRect().top <= 100) current = id;
-    });
-    document.querySelectorAll('.nav-link').forEach(link => {
-        link.classList.toggle('active', link.getAttribute('href') === `#${current}`);
-    });
+// ===== ÁREAS SELECCIONABLES (Formación / Prompting / Avanzado) =====
+// El portal ya no es un scroll infinito: las secciones se reparten en 3 grupos
+// y solo se muestra uno cada vez. Los contenedores #group-* existen vacíos en el
+// HTML y aquí movemos cada sección a su grupo.
+var VIEW_GROUPS = {
+    formacion: ['itinerario', 'ejercicios', 'tips'],
+    prompting: ['generador', 'prompts'],
+    avanzado: ['avanzado']
+};
+var SECTION_VIEW = {};
+Object.keys(VIEW_GROUPS).forEach(function (v) {
+    VIEW_GROUPS[v].forEach(function (id) { SECTION_VIEW[id] = v; });
 });
+
+function setupViews() {
+    // Reparte las secciones en sus grupos (en el orden definido arriba).
+    Object.keys(VIEW_GROUPS).forEach(function (view) {
+        var g = document.getElementById('group-' + view);
+        if (!g) return;
+        VIEW_GROUPS[view].forEach(function (id) {
+            var s = document.getElementById(id);
+            if (s) g.appendChild(s);
+        });
+    });
+
+    // Vista inicial: hash de la URL > preferencia guardada > Formación.
+    var initial = 'formacion';
+    var hashId = (location.hash || '').replace('#', '');
+    if (hashId && SECTION_VIEW[hashId]) initial = SECTION_VIEW[hashId];
+    else { try { var saved = localStorage.getItem('hrView'); if (saved && VIEW_GROUPS[saved]) initial = saved; } catch (e) {} }
+
+    // Selector grande + enlaces de nav con data-view.
+    document.querySelectorAll('.vsw-btn, .nav-link[data-view]').forEach(function (b) {
+        b.addEventListener('click', function () { setView(b.dataset.view); });
+    });
+
+    // Enlaces internos (#seccion): cambian de área y luego desplazan al destino.
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest('a[href^="#"]');
+        if (!a) return;
+        var id = a.getAttribute('href').slice(1);
+        if (!id || id === 'inicio') return;                 // Inicio: scroll normal al hero
+        var view = SECTION_VIEW[id];
+        if (!view) return;
+        e.preventDefault();
+        setView(view, { noScroll: true });
+        var t = document.getElementById(id);
+        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    setView(initial, { noScroll: true, instant: true });
+    document.body.classList.remove('view-pending');
+}
+
+function setView(view, opts) {
+    opts = opts || {};
+    if (!VIEW_GROUPS[view]) view = 'formacion';
+    Object.keys(VIEW_GROUPS).forEach(function (v) {
+        var g = document.getElementById('group-' + v);
+        if (g) g.hidden = (v !== view);
+    });
+    document.querySelectorAll('.vsw-btn').forEach(function (b) {
+        var on = b.dataset.view === view;
+        b.classList.toggle('active', on);
+        b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    document.querySelectorAll('.nav-link').forEach(function (l) {
+        l.classList.toggle('active', l.dataset.view === view);
+    });
+    try { localStorage.setItem('hrView', view); } catch (e) {}
+
+    // El grupo recién mostrado necesita re-medir layout (cohete del itinerario,
+    // campo de partículas que estaba a 0px mientras estaba oculto).
+    if (typeof updateJourneyRocket === 'function') updateJourneyRocket();
+    if (view === 'formacion') window.dispatchEvent(new Event('resize'));
+
+    if (!opts.noScroll) {
+        var sw = document.getElementById('view-switch');
+        if (sw) {
+            var y = sw.getBoundingClientRect().top + window.pageYOffset - 66;
+            window.scrollTo({ top: Math.max(0, y), behavior: opts.instant ? 'auto' : 'smooth' });
+        }
+    }
+}
+window.setView = setView;
 
 // ===== TOAST =====
 function showToast() {
@@ -681,6 +811,8 @@ function travelRocketSVG() {
 }
 
 function updateJourneyRocket() {
+    var gf = document.getElementById('group-formacion');
+    if (gf && gf.hidden) return;                 // área Formación no visible
     var lp = document.getElementById('learning-path');
     if (lp && lp.hidden) return;                 // timeline not visible (map view)
     const journey = document.querySelector('.journey');
@@ -1411,6 +1543,14 @@ function buildSearchIndex() {
             hay: (e.title + ' ' + (e.desc || '')).toLowerCase()
         });
     });
+    if (typeof CATALOG !== 'undefined') CATALOG.forEach(function (c) {
+        idx.push({
+            type: 'Avanzado', action: 'catalog', id: c.id,
+            label: c.name,
+            sub: (window.CATALOG_CAT_LABELS && window.CATALOG_CAT_LABELS[c.cat]) || 'Catálogo avanzado',
+            hay: (c.name + ' ' + (c.gets || '') + ' ' + (c.when || '') + ' ' + (c.prompt || '')).toLowerCase()
+        });
+    });
     return idx;
 }
 
@@ -1445,7 +1585,7 @@ function runSearch(q) {
         return;
     }
     results.innerHTML = matches.map(function (m) {
-        var idArg = m.action === 'prompt' ? "'" + m.id + "'" : m.id;
+        var idArg = (m.action === 'prompt' || m.action === 'catalog') ? "'" + m.id + "'" : m.id;
         return '<button class="search-result" type="button" onclick="searchGo(\'' + m.action + '\',' + idArg + ')">' +
             '<span class="sr-type sr-' + m.action + '">' + m.type + '</span>' +
             '<span class="sr-main"><span class="sr-label">' + escapeHtml(m.label) + '</span>' +
@@ -1458,6 +1598,20 @@ function searchGo(action, id) {
     if (action === 'chapter') openChapter(id);
     else if (action === 'exercise') openExercise(id);
     else if (action === 'prompt') goToPrompt(id);
+    else if (action === 'catalog') goToCatalog(id);
+}
+function goToCatalog(id) {
+    if (typeof window.openCatalogTab === 'function') window.openCatalogTab();
+    var sec = document.getElementById('avanzado');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function () {
+        var card = document.querySelector('.cat-card[data-id="' + id + '"]');
+        if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            card.classList.add('flash');
+            setTimeout(function () { card.classList.remove('flash'); }, 1600);
+        }
+    }, 460);
 }
 function goToPrompt(id) {
     renderPrompts('all');
@@ -1568,11 +1722,13 @@ function observeReveals() {
 }
 
 // ===== INIT =====
+setupViews();          // reparte las secciones en 3 áreas y muestra la inicial
 renderLearningPath();
 refreshProgressUI();   // paint completion state (node checks, rocket, hero progress)
 renderFilters();
 renderPrompts();
 renderExercises();
+renderComparador();
 observeReveals();
 maybeShowOnboarding();
 

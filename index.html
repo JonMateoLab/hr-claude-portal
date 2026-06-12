@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Claude para HR — Software &amp; Platform Engineering — Accenture</title>
-<link rel="stylesheet" href="styles.css?v=202606112002">
+<link rel="stylesheet" href="styles.css?v=202606121113">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
 // Aplica el tema guardado antes de pintar para evitar parpadeo.
@@ -17,7 +17,7 @@
 })();
 </script>
 </head>
-<body>
+<body class="view-pending">
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo-group">
@@ -27,10 +27,9 @@
             </div>
             <div class="nav-links">
                 <a href="#inicio" class="nav-link active">Inicio</a>
-                <a href="#itinerario" class="nav-link">Itinerario</a>
-                <a href="#generador" class="nav-link">Generador</a>
-                <a href="#ejercicios" class="nav-link">Ejercicios</a>
-                <a href="#prompts" class="nav-link">Biblioteca</a>
+                <button type="button" class="nav-link" data-view="formacion">Formaci&oacute;n</button>
+                <button type="button" class="nav-link" data-view="prompting">Prompting</button>
+                <button type="button" class="nav-link nav-link-new" data-view="avanzado">Avanzado</button>
             </div>
             <button class="search-trigger" id="search-trigger" type="button" aria-label="Buscar (Ctrl+K)" title="Buscar (Ctrl + K)">
                 <svg class="st-icon" viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -89,6 +88,27 @@
         </div>
     </section>
 
+    <!-- ===== SELECTOR DE AREA (3 grupos) ===== -->
+    <div class="view-switch" id="view-switch" role="tablist" aria-label="Elige un &aacute;rea del portal">
+        <button class="vsw-btn active" type="button" role="tab" data-view="formacion" aria-selected="true">
+            <span class="vsw-ic" aria-hidden="true">&#127891;</span>
+            <span class="vsw-tx"><b>Formaci&oacute;n</b><small>Itinerario &middot; Ejercicios &middot; Tips</small></span>
+        </button>
+        <button class="vsw-btn" type="button" role="tab" data-view="prompting" aria-selected="false">
+            <span class="vsw-ic" aria-hidden="true">&#9889;</span>
+            <span class="vsw-tx"><b>Prompting</b><small>Generador &middot; Biblioteca</small></span>
+        </button>
+        <button class="vsw-btn" type="button" role="tab" data-view="avanzado" aria-selected="false">
+            <span class="vsw-ic" aria-hidden="true">&#10024;</span>
+            <span class="vsw-tx"><b>Avanzado</b><small>Efectos &middot; 100 cosas</small></span>
+        </button>
+    </div>
+
+    <!-- Contenedores de area (se rellenan moviendo las secciones por JS) -->
+    <div class="view-group" id="group-formacion" role="tabpanel" aria-label="Formaci&oacute;n"></div>
+    <div class="view-group" id="group-prompting" role="tabpanel" aria-label="Prompting" hidden></div>
+    <div class="view-group" id="group-avanzado" role="tabpanel" aria-label="Avanzado" hidden></div>
+
     <!-- ITINERARIO FORMATIVO -->
     <section id="itinerario" class="section">
         <canvas id="itinerary-particles" aria-hidden="true"></canvas>
@@ -133,6 +153,32 @@
                         </select>
                     </div>
 
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Rol de Claude (opcional)</label>
+                            <select id="gen-rol">
+                                <option value="">Autom&aacute;tico seg&uacute;n la tarea</option>
+                                <option value="Act&uacute;a como un HRBP senior de Software &amp; Platform Engineering en Accenture.">HRBP senior</option>
+                                <option value="Act&uacute;a como un consultor de transformaci&oacute;n senior.">Consultor de transformaci&oacute;n</option>
+                                <option value="Act&uacute;a como un analista experto en People Analytics.">Analista de People Analytics</option>
+                                <option value="Act&uacute;a como un experto en comunicaci&oacute;n interna corporativa.">Experto en comunicaci&oacute;n</option>
+                                <option value="Act&uacute;a como un socio de consultor&iacute;a muy exigente.">Socio de consultor&iacute;a exigente</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Audiencia (opcional)</label>
+                            <select id="gen-audience">
+                                <option value="">Sin especificar</option>
+                                <option value="el liderazgo de la practice">Leadership</option>
+                                <option value="el comit&eacute; ejecutivo">Comit&eacute; ejecutivo</option>
+                                <option value="managers / people leads">Managers</option>
+                                <option value="el equipo / empleados">Empleados</option>
+                                <option value="HR y Employee Relations">HR / ER</option>
+                                <option value="el cliente">Cliente</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>Contexto adicional (opcional)</label>
                         <textarea id="gen-context" placeholder="Ej: Practice de Cloud & Infra, equipo de 45 personas, audience es el MD de la practice..."></textarea>
@@ -147,6 +193,21 @@
                             <option value="email">Email</option>
                             <option value="one-pager">One-pager ejecutivo</option>
                         </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nivel de detalle</label>
+                            <select id="gen-detail">
+                                <option value="equilibrado">Equilibrado</option>
+                                <option value="resumen">Resumen ejecutivo</option>
+                                <option value="exhaustivo">Exhaustivo</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Restricciones (opcional)</label>
+                            <input type="text" id="gen-constraints" placeholder="Ej: m&aacute;ximo 300 palabras, sin jerga, tono no defensivo">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -176,6 +237,16 @@
                         <p>Tu prompt aparecera aqui.<br>Selecciona las opciones y pulsa "Generar".</p>
                     </div>
                 </div>
+            </div>
+
+            <!-- COMPARADOR ANTES / DESPUÉS -->
+            <div class="comparador" id="comparador">
+                <div class="cmp-head">
+                    <h3>Antes y despu&eacute;s: de prompt b&aacute;sico a experto</h3>
+                    <p>El mismo objetivo, dos formas de pedirlo. Elige un caso y copia el prompt experto.</p>
+                </div>
+                <div class="cmp-chips" id="cmp-chips"></div>
+                <div class="cmp-view" id="cmp-view"></div>
             </div>
         </div>
     </section>
@@ -219,8 +290,58 @@
         </div>
     </section>
 
+    <!-- AVANZADO: GALERIA DE EFECTOS + CATALOGO 100 -->
+    <section id="avanzado" class="section">
+        <div class="container">
+            <div class="section-header acc-blue">
+                <span class="section-eyebrow">Avanzado &middot; Nuevo</span>
+                <h2>Claude Avanzado</h2>
+                <p>De chatbot a plataforma de trabajo. Aqu&iacute; ves <strong>qu&eacute; se le puede pedir a Claude</strong> y c&oacute;mo: efectos visuales en vivo y un cat&aacute;logo de cosas que (quiz&aacute;) no sab&iacute;as que pod&iacute;a hacer.</p>
+            </div>
+
+            <div class="avz-tabs" role="tablist" aria-label="Apartados de Avanzado">
+                <button class="avz-tab active" type="button" role="tab" data-avz="efectos" aria-selected="true">&#10024; Galer&iacute;a de efectos</button>
+                <button class="avz-tab" type="button" role="tab" data-avz="catalogo" aria-selected="false">&#128218; 100 cosas que no sab&iacute;as</button>
+                <button class="avz-tab" type="button" role="tab" data-avz="guias" aria-selected="false">&#128214; Gu&iacute;as</button>
+            </div>
+
+            <!-- PANEL: GALERIA DE EFECTOS -->
+            <div class="avz-panel" id="avz-efectos" role="tabpanel">
+                <p class="avz-intro">Cada tarjeta muestra un efecto <strong>funcionando de verdad</strong> y la frase exacta para ped&iacute;rselo. Pulsa <strong>&#8635;</strong> para reproducirlo otra vez o filtra por tipo. Todos se pueden combinar y ajustar en color, intensidad y duraci&oacute;n.</p>
+                <div class="fx-catbar" id="fx-catbar"></div>
+                <div class="fx-gallery" id="fx-gallery"></div>
+            </div>
+
+            <!-- PANEL: CATALOGO 100 -->
+            <div class="avz-panel" id="avz-catalogo" role="tabpanel" hidden>
+                <p class="avz-intro">100 recursos pr&aacute;cticos: presentaciones, Excel, dashboards, artifacts, comunicaci&oacute;n, workflows, HR analytics y calidad. <strong>Busca, filtra y copia</strong> el prompt listo para usar. Marca tus favoritos con la &#9733;.</p>
+                <div class="cat-controls">
+                    <div class="cat-search-row">
+                        <svg viewBox="0 0 24 24" width="17" height="17" class="cat-search-ic" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                        <input type="text" id="cat-search" placeholder="Buscar en las 100 (ej: dashboard, attrition, roadmap, riesgos&hellip;)" autocomplete="off" spellcheck="false">
+                    </div>
+                    <div class="cat-chips" id="cat-cats"></div>
+                    <div class="cat-subrow">
+                        <select id="cat-level" aria-label="Filtrar por nivel"></select>
+                        <select id="cat-format" aria-label="Filtrar por formato"></select>
+                        <button class="cat-fav-toggle" id="cat-fav" type="button">&#9733; Favoritos <span id="cat-fav-count">(0)</span></button>
+                        <span class="cat-count" id="cat-count"></span>
+                    </div>
+                </div>
+                <div class="cat-grid" id="cat-grid"></div>
+            </div>
+
+            <!-- PANEL: GUIAS -->
+            <div class="avz-panel" id="avz-guias" role="tabpanel" hidden>
+                <p class="avz-intro">Gu&iacute;as pr&aacute;cticas de qu&eacute; pedirle a Claude y c&oacute;mo. Elige una para entrar; cada una trae ejemplos y <strong>prompts listos para copiar</strong>.</p>
+                <div class="guides-menu" id="guides-menu"></div>
+                <div class="guides-detail" id="guides-detail" hidden></div>
+            </div>
+        </div>
+    </section>
+
     <!-- TIPS -->
-    <section class="section">
+    <section id="tips" class="section">
         <div class="container">
             <div class="section-header acc-amber">
                 <span class="section-eyebrow">Consejos</span>
@@ -284,12 +405,15 @@
     <!-- TOAST -->
     <div class="toast" id="toast">Prompt copiado al portapapeles</div>
 
-    <script src="particles.js?v=202606112002"></script>
-    <script src="logos.js?v=202606112002"></script>
-    <script src="data.js?v=202606112002"></script>
-    <script src="exercises.js?v=202606112002"></script>
-    <script src="learning-path.js?v=202606112002"></script>
-    <script src="robots.js?v=202606112002"></script>
-    <script src="app.js?v=202606112002"></script>
+    <script src="particles.js?v=202606121113"></script>
+    <script src="logos.js?v=202606121113"></script>
+    <script src="data.js?v=202606121113"></script>
+    <script src="exercises.js?v=202606121113"></script>
+    <script src="learning-path.js?v=202606121113"></script>
+    <script src="robots.js?v=202606121113"></script>
+    <script src="effects.js?v=202606121113"></script>
+    <script src="catalog.js?v=202606121113"></script>
+    <script src="guides.js?v=202606121113"></script>
+    <script src="app.js?v=202606121113"></script>
 </body>
 </html>
